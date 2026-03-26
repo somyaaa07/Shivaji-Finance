@@ -105,7 +105,7 @@ export default function Navbar() {
   const [menuOpen,      setMenuOpen]      = useState(false);
   const [openDropdown,  setOpenDropdown]  = useState(null);
   const [scrolled,      setScrolled]      = useState(false);
-  const [showApplyForm, setShowApplyForm] = useState(false); // ← yahi toggle karo
+  const [showApplyForm, setShowApplyForm] = useState(false); 
   const location = useLocation();
 
   useEffect(() => { setMenuOpen(false); setOpenDropdown(null); }, [location.pathname]);
@@ -134,7 +134,7 @@ export default function Navbar() {
     <>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:wght@300;400;500;600&display=swap');
-        *, *::before, *::after { box-sizing: border-box; }
+       
         body { font-family: 'DM Sans', sans-serif; margin: 0; }
 
         @keyframes ticker {

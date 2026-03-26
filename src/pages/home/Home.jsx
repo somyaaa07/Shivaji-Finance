@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import ApplyPage from "../../common/Applynow";
 
 const Icon = ({ name, size = 20, style = {} }) => {
   const p = { width: size, height: size, viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: "1.8", strokeLinecap: "round", strokeLinejoin: "round", style: { display: "block", ...style } };
@@ -64,6 +65,8 @@ export default function ClearFund() {
   const [tenure, setTenure] = useState(10);
   const [activeFaq, setFaq]  = useState(null);
   const [scrolled, setScrolled] = useState(false);
+  // ── Apply Modal State ──
+  const [showApplyForm, setShowApplyForm] = useState(false);
 
   useEffect(() => {
     const fn = () => setScrolled(window.scrollY > 60);
@@ -78,6 +81,9 @@ export default function ClearFund() {
   const fmt      = v => v.toLocaleString("en-IN");
   const apPct    = ((amount - 50000) / 4950000) * 100;
   const tpPct    = ((tenure - 1) / 29) * 100;
+
+  // ── Helper: open modal ──
+  const openApply = () => setShowApplyForm(true);
 
   return (
     <div style={{ fontFamily:"'Sora',sans-serif", background:"#f5f3ef", color:D, overflowX:"hidden" }}>
@@ -126,7 +132,10 @@ export default function ClearFund() {
         .shimmer-btn::after{content:'';position:absolute;top:0;left:0;width:50%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.08),transparent);animation:shimX 3.5s ease infinite}
       `}</style>
 
-   
+      {/* ══════════ APPLY MODAL ══════════ */}
+      {showApplyForm && (
+        <ApplyPage asModal onClose={() => setShowApplyForm(false)} />
+      )}
 
       {/* ══════════ HERO ══════════ */}
       <section style={{position:"relative",height:"100vh",minHeight:700,overflow:"hidden"}}>
@@ -136,7 +145,6 @@ export default function ClearFund() {
           style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover",objectPosition:"center 60%",filter:"brightness(.38) saturate(.7)"}}
         />
         <div style={{position:"absolute",inset:0,background:`linear-gradient(115deg,${D}ee 0%,${D}bb 50%,rgba(43,57,75,.3) 100%)`}}/>
-        {/* vertical rule lines */}
         {[16,34,52,70,86].map(p=>(
           <div key={p} style={{position:"absolute",top:0,bottom:0,left:`${p}%`,width:1,background:"rgba(255,255,255,.04)"}}/>
         ))}
@@ -160,7 +168,10 @@ export default function ClearFund() {
             </p>
 
             <div className="fu d3" style={{display:"flex",gap:12,marginBottom:48}}>
-              <button className="btn-dark" style={{padding:"14px 36px",fontSize:15,borderRadius:8}}>Check Eligibility →</button>
+              {/* ── CHECK ELIGIBILITY BUTTON ── */}
+              <button className="btn-dark" style={{padding:"14px 36px",fontSize:15,borderRadius:8}} onClick={openApply}>
+                Check Eligibility →
+              </button>
               <button className="btn-outline" style={{padding:"14px 24px",fontSize:15,borderRadius:8,display:"flex",alignItems:"center",gap:8}}>
                 <Icon name="phone" size={15} style={{color:"white"}}/> Talk to Expert
               </button>
@@ -214,7 +225,8 @@ export default function ClearFund() {
               ))}
               <div style={{marginBottom:6}}/>
 
-              <button className="btn-dark shimmer-btn" style={{width:"100%",padding:"14px",fontSize:15,borderRadius:12}}>
+              {/* ── CLAIM THIS OFFER BUTTON ── */}
+              <button className="btn-dark shimmer-btn" style={{width:"100%",padding:"14px",fontSize:15,borderRadius:12}} onClick={openApply}>
                 Claim This Offer →
               </button>
               <p style={{textAlign:"center",fontSize:11,color:"rgba(255,255,255,.22)",marginTop:12}}>No CIBIL impact · check freely</p>
@@ -255,7 +267,6 @@ export default function ClearFund() {
       {/* ══════════ LOANS ══════════ */}
       <section style={{padding:"110px 72px",background:"#f5f3ef"}}>
         <div style={{maxWidth:1200,margin:"0 auto"}}>
-          {/* split header */}
           <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:48,alignItems:"flex-end",marginBottom:60}}>
             <div>
               <div style={{display:"flex",alignItems:"center",gap:12,marginBottom:16}}>
@@ -270,14 +281,15 @@ export default function ClearFund() {
               <p style={{fontSize:15,color:"rgba(43,57,75,.48)",lineHeight:1.85,maxWidth:360,marginBottom:24}}>
                 Carefully designed loan products — fair, transparent, and built for real people with real ambitions.
               </p>
-              <button className="btn-dark" style={{borderRadius:8}}>Compare All Loans →</button>
+              {/* ── COMPARE ALL LOANS BUTTON ── */}
+              <button className="btn-dark" style={{borderRadius:8}} onClick={openApply}>Compare All Loans →</button>
             </div>
           </div>
 
-          {/* 4-col grid — first card taller */}
+          {/* 4-col grid */}
           <div style={{display:"grid",gridTemplateColumns:"1.2fr 1fr 1fr 1fr",gap:18,alignItems:"start"}}>
             {LOANS.map((loan,idx)=>(
-              <div key={loan.title} className="loan-card" style={{paddingTop:idx===0?38:28}}>
+              <div key={loan.title} className="loan-card" style={{paddingTop:idx===0?38:28}} onClick={openApply}>
                 <div style={{width:52,height:52,background:"rgba(43,57,75,.07)",borderRadius:14,display:"flex",alignItems:"center",justifyContent:"center",marginBottom:20}}>
                   <Icon name={loan.icon} size={22} style={{color:D}}/>
                 </div>
@@ -388,7 +400,6 @@ export default function ClearFund() {
                 <p style={{fontSize:11,color:"rgba(43,57,75,.32)",textTransform:"uppercase",letterSpacing:".14em",fontWeight:700,marginBottom:12}}>Monthly EMI</p>
                 <p style={{fontFamily:"'Playfair Display',serif",fontSize:"clamp(52px,5vw,76px)",fontWeight:800,color:D,lineHeight:1}}>₹{fmt(emi)}</p>
                 <p style={{fontSize:13,color:"rgba(43,57,75,.35)",marginTop:10}}>for {tenure} years · {n} instalments</p>
-                {/* stacked bar */}
                 <div style={{marginTop:24,height:8,borderRadius:4,background:"rgba(43,57,75,.07)",overflow:"hidden"}}>
                   <div style={{height:"100%",width:`${(amount/total)*100}%`,background:D,borderRadius:4,transition:"width .5s ease"}}/>
                 </div>
@@ -407,7 +418,8 @@ export default function ClearFund() {
                 ))}
               </div>
 
-              <button className="btn-dark" style={{width:"100%",padding:"15px",fontSize:15,borderRadius:10}}>
+              {/* ── APPLY FOR THIS LOAN BUTTON ── */}
+              <button className="btn-dark" style={{width:"100%",padding:"15px",fontSize:15,borderRadius:10}} onClick={openApply}>
                 Apply for this Loan →
               </button>
             </div>
@@ -461,7 +473,6 @@ export default function ClearFund() {
       {/* ══════════ FAQ ══════════ */}
       <section style={{background:"#f5f3ef",padding:"110px 72px"}}>
         <div style={{maxWidth:1100,margin:"0 auto",display:"grid",gridTemplateColumns:"1fr 1.5fr",gap:80,alignItems:"start"}}>
-          {/* sticky left */}
           <div style={{position:"sticky",top:100}}>
             <div style={{display:"flex",alignItems:"center",gap:12,marginBottom:16}}>
               <div style={{height:2,width:28,background:D}}/>
@@ -478,7 +489,6 @@ export default function ClearFund() {
             </button>
           </div>
 
-          {/* accordion */}
           <div style={{display:"flex",flexDirection:"column",gap:10}}>
             {FAQS.map((faq,idx)=>(
               <div key={idx} style={{
@@ -527,7 +537,10 @@ export default function ClearFund() {
               </p>
               <div style={{display:"flex",gap:12}}>
                 <button className="btn-outline">Learn More</button>
-                <button style={{background:"white",color:D,border:"none",borderRadius:7,padding:"13px 32px",fontSize:15,fontWeight:700,cursor:"pointer",fontFamily:"inherit",transition:"all .2s"}}
+                {/* ── APPLY NOW — FREE BUTTON ── */}
+                <button
+                  onClick={openApply}
+                  style={{background:"white",color:D,border:"none",borderRadius:7,padding:"13px 32px",fontSize:15,fontWeight:700,cursor:"pointer",fontFamily:"inherit",transition:"all .2s"}}
                   onMouseEnter={e=>{e.currentTarget.style.transform="translateY(-2px)";e.currentTarget.style.boxShadow="0 10px 32px rgba(0,0,0,.22)"}}
                   onMouseLeave={e=>{e.currentTarget.style.transform="none";e.currentTarget.style.boxShadow="none"}}>
                   Apply Now — Free
@@ -538,7 +551,6 @@ export default function ClearFund() {
         </div>
       </section>
 
- 
     </div>
   );
 }
