@@ -142,7 +142,7 @@ export default function ClearFund() {
           <span style={{fontFamily:"'Playfair Display',serif",fontSize:24,fontWeight:700,color:"white"}}>Shivaji Finance</span>
         </div>
         <div style={{display:"flex",gap:36}}>
-          {["Loans","Calculator","About","Contact"].map(l=><a key={l} href="/contact" className="nl">{l}</a>)}
+          {["Loans","About","Calculator","Contact"].map(l=><a key={l} href="/contact" className="nl">{l}</a>)}
         </div>
         <div style={{display:"flex",gap:10}}>
           <button className="btn-outline" style={{padding:"8px 20px",fontSize:13}}>Sign In</button>
