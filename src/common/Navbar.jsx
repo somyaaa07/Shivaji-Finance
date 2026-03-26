@@ -16,90 +16,37 @@ const TICKERS = [
   { sym: "GOLD",  price: "2,318",  chg: "+0.76%", up: true  },
 ];
 
-
 const NAV_ITEMS = [
-  {
-    label: "Home", path: "/",
-
-  },
-  {
-    label: "About", path: "/about",
-
-  },
-  {
-    label: "Service", path:"/service"
-  },
-  {
-    label: "Calculate", path: "/calculate",
-  
-  },
-  { label: "Conatct", path: "/contact" },
- 
+  { label: "Home",      path: "/" },
+  { label: "About",     path: "/about" },
+  { label: "Service",   path: "/service" },
+  { label: "Calculate", path: "/calculate" },
+  { label: "Contact",   path: "/contact" },
 ];
-
-
-function AurexLogo({ size = 36 }) {
-  return (
-    <svg width={size} height={size} viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <defs>
-        <linearGradient id="logoGrad" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0%" stopColor="#f0b429"/>
-          <stop offset="100%" stopColor="#d97706"/>
-        </linearGradient>
-        <filter id="glow">
-          <feGaussianBlur stdDeviation="1.5" result="blur"/>
-          <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
-        </filter>
-      </defs>
-      <rect width="36" height="36" rx="10" fill="url(#logoGrad)"/>
-      <polyline
-        points="7,26 13,16 18,21 23,11 29,11"
-        stroke="#0b0f1a" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round"
-        fill="none"
-      />
-      <polyline
-        points="24,8 29,11 26,16"
-        stroke="#0b0f1a" strokeWidth="2.8" strokeLinecap="round" strokeLinejoin="round"
-        fill="none"
-      />
-    </svg>
-  );
-}
 
 // ── Ticker Strip ──────────────────────────────────────────────────────────────
 function TickerStrip() {
   const doubled = [...TICKERS, ...TICKERS];
   return (
-    <div style={{ overflow: "hidden", whiteSpace: "nowrap", background: "#0f1729", borderBottom: "1px solid rgba(240,180,41,0.1)", padding: "6px 0" }}>
-      <div style={{ display: "inline-flex", gap: "2.5rem", animation: "ticker 24s linear infinite", paddingLeft: "1rem" }}>
+    <div style={{
+      overflow: "hidden", whiteSpace: "nowrap",
+      background: "#2b394b",
+      borderBottom: "1px solid rgba(205,205,228,0.15)",
+      padding: "6px 0",
+    }}>
+      <div style={{
+        display: "inline-flex", gap: "2.5rem",
+        animation: "ticker 24s linear infinite", paddingLeft: "1rem",
+      }}>
         {doubled.map((t, i) => (
           <span key={i} style={{ display: "inline-flex", alignItems: "center", gap: 8, fontSize: "0.72rem", letterSpacing: "0.04em" }}>
-            <span style={{ fontWeight: 600, color: "#e2e8f0" }}>{t.sym}</span>
-            <span style={{ color: "#64748b" }}>${t.price}</span>
-            <span style={{ color: t.up ? "#22c55e" : "#ef4444" }}>{t.up ? "▲" : "▼"} {t.chg}</span>
+            <span style={{ fontWeight: 600, color: "#cdcde4" }}>{t.sym}</span>
+            <span style={{ color: "rgba(205,205,228,0.5)" }}>${t.price}</span>
+            <span style={{ color: t.up ? "#4ade80" : "#f87171" }}>{t.up ? "▲" : "▼"} {t.chg}</span>
           </span>
         ))}
       </div>
     </div>
-  );
-}
-
-// ── Dropdown Menu ─────────────────────────────────────────────────────────────
-function DropdownMenu({ items, onClose }) {
-  return (
-    <>
-      {items.map((d) => (
-        <Link key={d.path} to={d.path} onClick={onClose} style={{ textDecoration: "none" }}>
-          <div className="dropdown-item">
-            <span className="dropdown-icon">{d.icon}</span>
-            <span>
-              <span style={{ display: "block", fontSize: "0.82rem", fontWeight: 600, color: "#e2e8f0" }}>{d.label}</span>
-              <span style={{ display: "block", fontSize: "0.7rem", color: "#64748b" }}>{d.sub}</span>
-            </span>
-          </div>
-        </Link>
-      ))}
-    </>
   );
 }
 
@@ -108,7 +55,7 @@ export default function Navbar() {
   const [menuOpen,      setMenuOpen]      = useState(false);
   const [openDropdown,  setOpenDropdown]  = useState(null);
   const [scrolled,      setScrolled]      = useState(false);
-  const [showApplyForm, setShowApplyForm] = useState(false); 
+  const [showApplyForm, setShowApplyForm] = useState(false);
   const location = useLocation();
 
   useEffect(() => { setMenuOpen(false); setOpenDropdown(null); }, [location.pathname]);
@@ -137,7 +84,6 @@ export default function Navbar() {
     <>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:wght@300;400;500;600&display=swap');
-       
         body { font-family: 'DM Sans', sans-serif; margin: 0; }
 
         @keyframes ticker {
@@ -145,28 +91,31 @@ export default function Navbar() {
           100% { transform: translateX(-50%); }
         }
 
+        /* Nav link */
         .nav-btn {
           position: relative; display: inline-flex; align-items: center; gap: 4px;
           background: none; border: none; cursor: pointer;
           font-family: 'DM Sans', sans-serif; font-size: 0.875rem; font-weight: 500;
-          letter-spacing: 0.02em; color: #94a3b8; padding: 4px 0;
+          letter-spacing: 0.02em; color: #4a5d70; padding: 4px 0;
           transition: color 0.2s; text-decoration: none; white-space: nowrap;
         }
         .nav-btn::after {
           content: ''; position: absolute; bottom: -4px; left: 0;
-          width: 0; height: 1.5px;
-          background: linear-gradient(90deg, #f0b429, #f59e0b);
+          width: 0; height: 2px;
+          background: linear-gradient(90deg, #2b394b, #3d5266);
           transition: width 0.3s ease;
         }
-        .nav-btn:hover, .nav-btn.active { color: #f8fafc; }
+        .nav-btn:hover, .nav-btn.active { color: #2b394b; }
         .nav-btn:hover::after, .nav-btn.active::after { width: 100%; }
 
+        /* Dropdown */
         .nav-dropdown {
           position: absolute; top: calc(100% + 12px); left: 50%;
           transform: translateX(-50%) translateY(-6px);
-          background: #111827; border: 1px solid rgba(255,255,255,0.08);
+          background: #f0f1f4;
+          border: 1px solid rgba(43,57,75,0.12);
           border-radius: 12px; padding: 6px; min-width: 215px;
-          box-shadow: 0 20px 40px rgba(0,0,0,0.55); z-index: 200;
+          box-shadow: 0 16px 36px rgba(43,57,75,0.14); z-index: 200;
           opacity: 0; visibility: hidden;
           transition: opacity 0.2s ease, visibility 0.2s ease, transform 0.2s ease;
         }
@@ -178,37 +127,57 @@ export default function Navbar() {
           display: flex; align-items: center; gap: 10px;
           padding: 9px 10px; border-radius: 8px; cursor: pointer; transition: background 0.15s;
         }
-        .dropdown-item:hover { background: rgba(240,180,41,0.08); }
+        .dropdown-item:hover { background: rgba(43,57,75,0.07); }
         .dropdown-icon {
           width: 30px; height: 30px; border-radius: 8px;
-          background: rgba(240,180,41,0.1);
+          background: rgba(43,57,75,0.08);
           display: flex; align-items: center; justify-content: center;
           font-size: 0.9rem; flex-shrink: 0;
         }
+
+        /* Mobile menu */
         .mobile-menu {
           overflow: hidden; transition: max-height 0.35s ease, opacity 0.3s ease;
-          background: #0f1729; border-top: 1px solid rgba(255,255,255,0.05);
+          background: #cacdd2;
+          border-top: 1px solid rgba(43,57,75,0.1);
         }
+
+        /* Buttons */
         .btn-login {
-          background: transparent; border: 1px solid rgba(148,163,184,0.22);
-          color: #94a3b8; font-family: 'DM Sans', sans-serif;
+          background: transparent;
+          border: 1.5px solid rgba(43,57,75,0.25);
+          color: #4a5d70;
+          font-family: 'DM Sans', sans-serif;
           font-size: 0.8rem; font-weight: 500; padding: 8px 16px;
           border-radius: 7px; cursor: pointer; transition: all 0.2s;
         }
         .btn-login:hover {
-          color: #f8fafc; border-color: rgba(240,180,41,0.4);
-          background: rgba(240,180,41,0.06);
+          color: #2b394b;
+          border-color: rgba(43,57,75,0.5);
+          background: rgba(43,57,75,0.06);
         }
         .btn-cta {
-          background: linear-gradient(135deg, #f0b429, #d97706);
-          color: #0b0f1a; font-family: 'DM Sans', sans-serif;
+          background: linear-gradient(135deg, #2b394b, #3d5266);
+          color: #cdcde4;
+          font-family: 'DM Sans', sans-serif;
           font-size: 0.8rem; font-weight: 700; padding: 8px 20px;
           border-radius: 7px; border: none; cursor: pointer;
-          box-shadow: 0 0 18px rgba(240,180,41,0.28); transition: all 0.2s;
+          box-shadow: 0 4px 16px rgba(43,57,75,0.22);
+          transition: all 0.2s;
         }
         .btn-cta:hover {
-          box-shadow: 0 0 28px rgba(240,180,41,0.5); transform: translateY(-1px);
+          box-shadow: 0 6px 24px rgba(43,57,75,0.35);
+          transform: translateY(-1px);
+          filter: brightness(1.08);
         }
+
+        /* Nav top border accent */
+        .nav-accent-border {
+          position: absolute; top: 0; left: 0; right: 0; height: 2px;
+          background: linear-gradient(90deg, transparent, #2b394b, #cdcde4, #2b394b, transparent);
+          pointer-events: none;
+        }
+
         .desktop-nav   { display: flex; }
         .hamburger-btn { display: none; }
         @media (max-width: 768px) {
@@ -218,21 +187,33 @@ export default function Navbar() {
       `}</style>
 
       <header style={{ position: "sticky", top: 0, zIndex: 100 }}>
+        {/* Ticker */}
         <TickerStrip />
 
+        {/* Main nav */}
         <nav style={{
-          background: scrolled ? "rgba(11,15,26,0.97)" : "rgba(11,15,26,0.92)",
+          position: "relative",
+          background: scrolled
+            ? "rgba(202,205,210,0.98)"
+            : "rgba(202,205,210,0.95)",
           backdropFilter: "blur(20px)", WebkitBackdropFilter: "blur(20px)",
-          borderBottom: "1px solid rgba(255,255,255,0.05)",
-          boxShadow: scrolled ? "0 4px 30px rgba(0,0,0,0.5)" : "none",
+          borderBottom: "1px solid rgba(43,57,75,0.1)",
+          boxShadow: scrolled ? "0 4px 24px rgba(43,57,75,0.1)" : "none",
           transition: "all 0.3s",
         }}>
-          <div style={{ maxWidth: 1200, margin: "0 auto", padding: "0 24px", height: 64, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+          <div className="nav-accent-border" />
+
+          <div style={{
+            maxWidth: 1200, margin: "0 auto", padding: "0 24px",
+            height: 64, display: "flex", alignItems: "center", justifyContent: "space-between",
+          }}>
 
             {/* Logo */}
             <Link to="/" style={{ textDecoration: "none", display: "flex", alignItems: "center", gap: 10 }}>
-              
-              <span style={{ fontFamily: "'Playfair Display',serif", fontSize: "1.22rem", color: "#f8fafc", letterSpacing: "-0.02em" }}>
+              <span style={{
+                fontFamily: "'Playfair Display', serif",
+                fontSize: "1.22rem", color: "#2b394b", letterSpacing: "-0.02em",
+              }}>
                 Shivaji Finance
               </span>
             </Link>
@@ -254,7 +235,17 @@ export default function Navbar() {
                   </Link>
                   {item.dropdown && (
                     <div className={`nav-dropdown ${openDropdown === item.label ? "open" : ""}`}>
-                      <DropdownMenu items={item.dropdown} onClose={() => setOpenDropdown(null)} />
+                      {item.dropdown.map((d) => (
+                        <Link key={d.path} to={d.path} onClick={() => setOpenDropdown(null)} style={{ textDecoration: "none" }}>
+                          <div className="dropdown-item">
+                            <span className="dropdown-icon">{d.icon}</span>
+                            <span>
+                              <span style={{ display: "block", fontSize: "0.82rem", fontWeight: 600, color: "#2b394b" }}>{d.label}</span>
+                              <span style={{ display: "block", fontSize: "0.7rem", color: "#6a8090" }}>{d.sub}</span>
+                            </span>
+                          </div>
+                        </Link>
+                      ))}
                     </div>
                   )}
                 </div>
@@ -266,25 +257,31 @@ export default function Navbar() {
               <Link to="/login" style={{ textDecoration: "none" }}>
                 <button className="btn-login">Log in</button>
               </Link>
-              {/* Apply Now button  */}
               <button className="btn-cta" onClick={() => setShowApplyForm(true)}>
                 Apply Now
               </button>
             </div>
 
             {/* Hamburger */}
-            <button onClick={() => setMenuOpen(o => !o)} className="hamburger-btn"
-              style={{ background: "none", border: "none", cursor: "pointer", padding: 4, flexDirection: "column", gap: 5 }}
-              aria-label="Toggle menu">
+            <button
+              onClick={() => setMenuOpen(o => !o)}
+              className="hamburger-btn"
+              style={{
+                background: "none", border: "none", cursor: "pointer",
+                padding: 4, flexDirection: "column", gap: 5,
+              }}
+              aria-label="Toggle menu"
+            >
               {[0, 1, 2].map((i) => (
                 <span key={i} style={{
-                  display: "block", height: 1.5, borderRadius: 2,
-                  background: menuOpen ? "#f0b429" : "#94a3b8", transition: "all 0.3s",
+                  display: "block", height: 2, borderRadius: 2,
+                  background: menuOpen ? "#2b394b" : "#4a5d70",
+                  transition: "all 0.3s",
                   width: i === 2 ? (menuOpen ? 22 : 16) : 22,
                   transform: menuOpen
-                    ? i === 0 ? "translateY(6.5px) rotate(45deg)"
+                    ? i === 0 ? "translateY(7px) rotate(45deg)"
                     : i === 1 ? "scaleX(0)"
-                    : "translateY(-6.5px) rotate(-45deg)"
+                    : "translateY(-7px) rotate(-45deg)"
                     : "none",
                   opacity: menuOpen && i === 1 ? 0 : 1,
                 }}/>
@@ -297,18 +294,28 @@ export default function Navbar() {
             <div style={{ padding: "12px 24px 24px" }}>
               {NAV_ITEMS.map((item) => (
                 <div key={item.label} style={{ marginBottom: 2 }}>
-                  <Link to={item.path}
+                  <Link
+                    to={item.path}
                     className={`nav-btn ${isParentActive(item) ? "active" : ""}`}
-                    style={{ display: "block", padding: "10px 0", fontSize: "0.95rem" }}>
+                    style={{ display: "block", padding: "10px 0", fontSize: "0.95rem" }}
+                  >
                     {item.label}
                   </Link>
                   {item.dropdown && (
-                    <div style={{ marginLeft: 8, paddingLeft: 12, borderLeft: "2px solid rgba(240,180,41,0.2)", marginBottom: 6 }}>
+                    <div style={{
+                      marginLeft: 8, paddingLeft: 12,
+                      borderLeft: "2px solid rgba(43,57,75,0.2)",
+                      marginBottom: 6,
+                    }}>
                       {item.dropdown.map((d) => (
-                        <Link key={d.path} to={d.path}
-                          style={{ textDecoration: "none", display: "block", padding: "5px 6px", fontSize: "0.8rem", color: "#64748b", transition: "color 0.2s" }}
-                          onMouseEnter={e => e.currentTarget.style.color = "#cbd5e1"}
-                          onMouseLeave={e => e.currentTarget.style.color = "#64748b"}>
+                        <Link key={d.path} to={d.path} style={{
+                          textDecoration: "none", display: "block",
+                          padding: "5px 6px", fontSize: "0.8rem", color: "#6a8090",
+                          transition: "color 0.2s",
+                        }}
+                          onMouseEnter={e => e.currentTarget.style.color = "#2b394b"}
+                          onMouseLeave={e => e.currentTarget.style.color = "#6a8090"}
+                        >
                           {d.icon} {d.label}
                         </Link>
                       ))}
@@ -320,7 +327,8 @@ export default function Navbar() {
                 <Link to="/login" style={{ flex: 1, textDecoration: "none" }}>
                   <button className="btn-login" style={{ width: "100%" }}>Log in</button>
                 </Link>
-                <button className="btn-cta" style={{ flex: 1 }} onClick={() => { setMenuOpen(false); setShowApplyForm(true); }}>
+                <button className="btn-cta" style={{ flex: 1 }}
+                  onClick={() => { setMenuOpen(false); setShowApplyForm(true); }}>
                   Apply Now
                 </button>
               </div>
@@ -329,11 +337,6 @@ export default function Navbar() {
         </nav>
       </header>
 
-      {/*
-        ── Apply Now Modal ──────────────────────────────────────────────────────
-        ApplyPage ko asModal={true} pass karo → overlay popup mode mein render hoga
-        onClose se showApplyForm false ho jaata hai
-      */}
       {showApplyForm && (
         <ApplyPage
           asModal={true}

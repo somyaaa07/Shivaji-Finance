@@ -7,7 +7,7 @@ import LoanServicePage from './pages/loanServices/Page'
 
 import About from './pages/about/Page'
 import Navbar from './common/Navbar'
-//import Footer from './common/Footer'
+import Footer from './common/Footer'
 
 
 
@@ -35,7 +35,7 @@ export default function App() {
      
 
     </Routes>
-     {/* <Footer/> */}
+     <Footer/>
    </Router>
    
   )
