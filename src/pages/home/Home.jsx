@@ -140,14 +140,11 @@ export default function ClearFund() {
       {/* ══════════ HERO ══════════ */}
       <section style={{position:"relative",height:"100vh",minHeight:700,overflow:"hidden"}}>
         <img
-          src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1800&q=85&auto=format&fit=crop"
+          src="/2.png"
           alt="Dream home"
-          style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover",objectPosition:"center 60%",filter:"brightness(.38) saturate(.7)"}}
+          style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover",objectPosition:"center 60%"}}
         />
-        <div style={{position:"absolute",inset:0,background:`linear-gradient(115deg,${D}ee 0%,${D}bb 50%,rgba(43,57,75,.3) 100%)`}}/>
-        {[16,34,52,70,86].map(p=>(
-          <div key={p} style={{position:"absolute",top:0,bottom:0,left:`${p}%`,width:1,background:"rgba(255,255,255,.04)"}}/>
-        ))}
+       
 
         <div style={{position:"relative",zIndex:2,height:"100%",display:"flex",alignItems:"center",padding:"0 72px",gap:72,maxWidth:1380,margin:"0 auto"}}>
           {/* Left headline */}
