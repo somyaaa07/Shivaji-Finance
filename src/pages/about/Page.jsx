@@ -2,8 +2,9 @@ import { useState, useEffect, useRef } from "react";
 
 // ── PALETTE — Navy + Slate + White, no gold ──
 const C = {
+
   navy: "#1a2535",
-  navyDark: "#0f1824",
+  navyDark: "#2b394b",
   navyMid: "#243044",
   navyLight: "#2e3d52",
   slate: "#4a6080",
@@ -107,7 +108,6 @@ export default function About() {
     <div style={{ fontFamily: "'DM Sans', sans-serif", background: C.white, color: C.text, overflowX: "hidden" }}>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&family=DM+Sans:wght@300;400;500;600;700&display=swap');
-        * { box-sizing: border-box; margin: 0; padding: 0; }
         .fade-up { opacity: 0; transform: translateY(40px); transition: opacity 0.75s cubic-bezier(.22,1,.36,1), transform 0.75s cubic-bezier(.22,1,.36,1); }
         .fade-up.in { opacity: 1; transform: translateY(0); }
         .fade-in { opacity: 0; transition: opacity 0.9s ease; }
@@ -117,7 +117,7 @@ export default function About() {
         .hover-up { transition: transform 0.3s cubic-bezier(.22,1,.36,1); cursor: default; }
         .hover-up:hover { transform: translateY(-5px); }
         .step-card { transition: all 0.3s ease; cursor: default; }
-        .step-card:hover { background: ${C.navy} !important; border-color: ${C.navy} !important; }
+        .step-card:hover { background: ${C.navyDark} !important; border-color: ${C.navy} !important; }
         .step-card:hover .snum { color: ${C.accentLight} !important; }
         .step-card:hover .stitle { color: ${C.white} !important; }
         .step-card:hover .sdesc { color: rgba(255,255,255,0.55) !important; }
@@ -352,8 +352,8 @@ export default function About() {
               fontFamily: "'DM Sans', sans-serif", fontWeight: 600, fontSize: "0.9rem",
               cursor: "pointer", display: "inline-flex", alignItems: "center", gap: 10, transition: "all 0.25s",
             }}
-              onMouseEnter={e => { e.currentTarget.style.background = C.navyLight; e.currentTarget.style.transform = "translateY(-2px)"; }}
-              onMouseLeave={e => { e.currentTarget.style.background = C.navy; e.currentTarget.style.transform = "translateY(0)"; }}
+              onMouseEnter={e => { e.currentTarget.style.background = C.navy; e.currentTarget.style.transform = "translateY(-2px)"; }}
+              onMouseLeave={e => { e.currentTarget.style.background = C.navyDark; e.currentTarget.style.transform = "translateY(0)"; }}
             >
               Discover Our Story
               <svg viewBox="0 0 20 20" fill="none" width="14"><path d="M4 10h12M10 4l6 6-6 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>

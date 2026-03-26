@@ -4,7 +4,7 @@ import LoanHomePage from './pages/home/Home'
 import ContactPage from './pages/contact/Page'
 import About from './pages/about/Page'
 import Navbar from './common/Navbar'
-//import Footer from './common/Footer'
+import Footer from './common/Footer'
 
 
 export default function App() {
@@ -26,7 +26,7 @@ export default function App() {
 
      
     </Routes>
-     {/* <Footer/> */}
+     <Footer/>
    </Router>
    
   )
