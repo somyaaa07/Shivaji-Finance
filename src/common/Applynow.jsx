@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 
 
-function AurexLogo({ size = 36 }) {
+function ShivikaLogo({ size = 36 }) {
   return (
     <svg width={size} height={size} viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
       <defs>
@@ -25,16 +25,7 @@ function AurexLogo({ size = 36 }) {
   );
 }
 
-// ── ApplyPage Component ───────────────────────────────────────────────────────
-// Props:
-//   asModal  {boolean}  — render as a full-screen overlay modal (default: false = standalone page)
-//   onClose  {function} — required when asModal=true; called when user dismisses the modal
-//
-// Usage as MODAL (e.g. from Navbar):
-//   {showApply && <ApplyPage asModal onClose={() => setShowApply(false)} />}
-//
-// Usage as PAGE (e.g. React Router route):
-//   <Route path="/apply" element={<ApplyPage />} />
+
 
 export default function ApplyPage({ asModal = false, onClose }) {
   const [step, setStep]     = useState(1); // 1 = personal, 2 = financial, 3 = success

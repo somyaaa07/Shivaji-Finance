@@ -1,3 +1,4 @@
+
 import { useState, useEffect, useRef } from "react";
 
 // ── PALETTE — Navy + Slate + White, no gold ──
