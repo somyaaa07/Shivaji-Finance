@@ -137,7 +137,7 @@ export default function About() {
       <section ref={heroRef} style={{ position: "relative", minHeight: "100vh", display: "flex", alignItems: "flex-end", overflow: "hidden" }}>
         <div style={{
           position: "absolute", inset: 0,
-          backgroundImage: `url(https://images.unsplash.com/photo-1560520653-9e0e4c89eb11?w=1800&q=85)`,
+          backgroundImage: `url(https://images.pexels.com/photos/53621/calculator-calculation-insurance-finance-53621.jpeg)`,
           backgroundSize: "cover", backgroundPosition: "center 20%",
         }} />
         <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to right, rgba(10,17,28,0.95) 0%, rgba(10,17,28,0.72) 55%, rgba(10,17,28,0.3) 100%)" }} />

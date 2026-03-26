@@ -126,29 +126,7 @@ export default function ClearFund() {
         .shimmer-btn::after{content:'';position:absolute;top:0;left:0;width:50%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.08),transparent);animation:shimX 3.5s ease infinite}
       `}</style>
 
-      {/* ══════════ NAV ══════════ */}
-      <nav style={{
-        position:"fixed",top:0,left:0,right:0,zIndex:999,height:68,
-        padding:"0 56px",display:"flex",alignItems:"center",justifyContent:"space-between",
-        background: scrolled ? "rgba(43,57,75,.97)" : "transparent",
-        backdropFilter: scrolled ? "blur(18px)" : "none",
-        borderBottom: scrolled ? "1px solid rgba(255,255,255,.07)" : "none",
-        transition:"all .4s ease",
-      }}>
-        <div style={{display:"flex",alignItems:"center",gap:10}}>
-          <div style={{width:36,height:36,background:"white",borderRadius:10,display:"flex",alignItems:"center",justifyContent:"center"}}>
-            <Icon name="trending" size={17} style={{color:D}}/>
-          </div>
-          <span style={{fontFamily:"'Playfair Display',serif",fontSize:24,fontWeight:700,color:"white"}}>Shivaji Finance</span>
-        </div>
-        <div style={{display:"flex",gap:36}}>
-          {["Loans","About","Calculator","Contact"].map(l=><a key={l} href="/contact" className="nl">{l}</a>)}
-        </div>
-        <div style={{display:"flex",gap:10}}>
-          <button className="btn-outline" style={{padding:"8px 20px",fontSize:13}}>Sign In</button>
-          <button className="btn-dark" style={{padding:"9px 22px",fontSize:13}}>Apply Now →</button>
-        </div>
-      </nav>
+   
 
       {/* ══════════ HERO ══════════ */}
       <section style={{position:"relative",height:"100vh",minHeight:700,overflow:"hidden"}}>
@@ -560,45 +538,7 @@ export default function ClearFund() {
         </div>
       </section>
 
-      {/* ══════════ FOOTER ══════════ */}
-      <footer style={{background:D,padding:"64px 72px 36px",borderTop:"1px solid rgba(255,255,255,.06)"}}>
-        <div style={{maxWidth:1200,margin:"0 auto"}}>
-          <div style={{display:"grid",gridTemplateColumns:"1.6fr 1fr 1fr 1fr",gap:48,marginBottom:52}}>
-            <div>
-              <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:18}}>
-                <div style={{width:34,height:34,background:"white",borderRadius:10,display:"flex",alignItems:"center",justifyContent:"center"}}>
-                  <Icon name="trending" size={16} style={{color:D}}/>
-                </div>
-                <span style={{fontFamily:"'Playfair Display',serif",fontSize:24,fontWeight:700,color:"white"}}>ClearFund</span>
-              </div>
-              <p style={{fontSize:13,color:"rgba(255,255,255,.28)",lineHeight:1.9,maxWidth:240}}>Making credit transparent, accessible, and honest for every Indian.</p>
-              <div style={{display:"flex",gap:8,marginTop:20}}>
-                {["RBI","SSL","PCI"].map(t=>(
-                  <span key={t} style={{fontSize:10,padding:"4px 12px",borderRadius:100,background:"rgba(255,255,255,.06)",color:"rgba(255,255,255,.28)",fontWeight:700,letterSpacing:".08em"}}>{t}</span>
-                ))}
-              </div>
-            </div>
-            {[
-              ["Products",["Home Loan","Auto Loan","Business Loan","Education Loan"]],
-              ["Company", ["About Us","Careers","Blog","Contact"]],
-              ["Legal",   ["Privacy Policy","Terms of Use","Grievance","Cookies"]],
-            ].map(([title,links])=>(
-              <div key={title}>
-                <p style={{fontSize:11,fontWeight:700,color:"rgba(255,255,255,.35)",textTransform:"uppercase",letterSpacing:".12em",marginBottom:20}}>{title}</p>
-                {links.map(link=>(
-                  <a key={link} href="#" style={{display:"block",fontSize:13,color:"rgba(255,255,255,.28)",marginBottom:12,textDecoration:"none",transition:"color .2s"}}
-                    onMouseEnter={e=>e.target.style.color="rgba(255,255,255,.65)"}
-                    onMouseLeave={e=>e.target.style.color="rgba(255,255,255,.28)"}>{link}</a>
-                ))}
-              </div>
-            ))}
-          </div>
-          <div style={{borderTop:"1px solid rgba(255,255,255,.07)",paddingTop:26,display:"flex",justifyContent:"space-between",alignItems:"center"}}>
-            <p style={{fontSize:12,color:"rgba(255,255,255,.2)"}}>© 2026 ClearFund Financial Services Pvt. Ltd. · RBI Regulated NBFC</p>
-            <p style={{fontSize:12,color:"rgba(255,255,255,.18)"}}>Made with care for every Indian.</p>
-          </div>
-        </div>
-      </footer>
+ 
     </div>
   );
 }
