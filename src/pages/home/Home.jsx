@@ -101,7 +101,7 @@ export default function ClearFund() {
         @keyframes blink{0%,100%{opacity:1}50%{opacity:.25}}
         @keyframes shimX{0%{transform:translateX(-120%)}100%{transform:translateX(120%)}}
 
-        .fu{animation:fadeUp .65s cubic-bezier(.22,.68,0,1.1) forwards;opacity:0}
+        .fu{animation:fadeUp .65s cubic-bezier(.22,.68,0,1.1) both;opacity:0}
         .fi{animation:fadeIn .7s ease forwards;opacity:0}
         .d1{animation-delay:.12s}.d2{animation-delay:.24s}.d3{animation-delay:.36s}
         .d4{animation-delay:.48s}.d5{animation-delay:.6s}
@@ -133,6 +133,7 @@ export default function ClearFund() {
 
         /* ── Responsive overrides ── */
         @media(max-width:639px){
+          .fu{animation:none!important;opacity:1!important;transform:none!important}
           .hero-content{flex-direction:column!important;padding:80px 20px 40px!important;align-items:flex-start!important;gap:32px!important}
           .hero-float{width:100%!important;animation:none!important;float:none!important}
           .stats-grid{grid-template-columns:1fr 1fr!important}
@@ -153,6 +154,7 @@ export default function ClearFund() {
           .cta-buttons{flex-wrap:wrap!important}
         }
         @media(min-width:640px) and (max-width:1023px){
+          .fu{animation:none!important;opacity:1!important;transform:none!important}
           .hero-content{flex-direction:column!important;padding:100px 40px 60px!important;align-items:flex-start!important;gap:40px!important}
           .hero-float{width:100%!important;max-width:420px!important;animation:none!important}
           .stats-grid{grid-template-columns:repeat(2,1fr)!important}
@@ -172,23 +174,22 @@ export default function ClearFund() {
       `}</style>
 
       {/* ══════════ HERO ══════════ */}
-      <section style={{position:"relative", minHeight: isMobile ? "auto" : "100vh", overflow:"hidden"}}>
+      <section style={{position:"relative", minHeight: isMobile || isTablet ? "auto" : "100vh", overflow: isMobile || isTablet ? "visible" : "hidden"}}>
         <img
           src="/7.png"
           alt="Dream home"
           style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover",objectPosition:"center 60%"}}
         />
-        {/* Overlay for better readability on mobile */}
 
         <div
           className="hero-content"
           style={{
             position:"relative",zIndex:2,
             display:"flex",alignItems: isMobile ? "flex-start" : "center",
-            padding: isMobile ? "100px 20px 40px" : isTablet ? "120px 40px 60px" : "0 72px",
+            padding: isMobile ? "100px 20px 60px" : isTablet ? "120px 40px 80px" : "0 72px",
             gap: isMobile ? 32 : 72,
             maxWidth:1380, margin:"0 auto",
-            minHeight: isMobile ? "auto" : "100vh",
+            minHeight: isMobile || isTablet ? "auto" : "100vh",
             flexDirection: isMobile ? "column" : isTablet ? "column" : "row",
           }}
         >
@@ -280,47 +281,9 @@ export default function ClearFund() {
               <p style={{textAlign:"center",fontSize:11,color:"rgba(255,255,255,.22)",marginTop:12}}>No CIBIL impact · check freely</p>
             </div>
 
-            <div style={{marginTop:14,background:"rgba(255,255,255,.08)",backdropFilter:"blur(12px)",borderRadius:100,border:"1px solid rgba(255,255,255,.11)",padding:"9px 18px",display:"inline-flex",alignItems:"center",gap:8,float:"right"}}>
-              <span style={{width:7,height:7,borderRadius:"50%",background:"#6ee7b7",display:"inline-block",animation:"blink 1.6s infinite"}}/>
-              <span style={{fontSize:12,color:"rgba(255,255,255,.6)",fontWeight:500}}>2,345 applied today</span>
-            </div>
           </div>
         </div>
-
-     
       </section>
-
-      {/* ══════════ STATS ══════════ */}
-      <div style={{background:D, padding: isMobile ? "0 20px" : `0 ${sp}`}}>
-        <div
-          className="stats-grid"
-          style={{
-            maxWidth:1200, margin:"0 auto",
-            display:"grid",
-            gridTemplateColumns: isMobile ? "1fr 1fr" : isTablet ? "1fr 1fr" : "repeat(4,1fr)",
-          }}
-        >
-          {STATS.map((s,i)=>(
-            <div
-              key={s.label}
-              className="stats-cell"
-              style={{
-                padding: isMobile ? "32px 16px" : "48px 32px",
-                textAlign:"center",
-                borderRight: (!isMobile && !isTablet && i<3) ? "1px solid rgba(255,255,255,.09)" : "none",
-                borderBottom: (isMobile || isTablet) ? "1px solid rgba(255,255,255,.09)" : "none",
-                transition:"background .2s",cursor:"default",
-              }}
-              onMouseEnter={e=>e.currentTarget.style.background="rgba(255,255,255,.04)"}
-              onMouseLeave={e=>e.currentTarget.style.background="transparent"}
-            >
-              <Icon name={s.icon} size={22} style={{color:"rgba(255,255,255,.28)",margin:"0 auto 12px"}}/>
-              <p style={{fontFamily:"'Playfair Display',serif",fontSize: isMobile ? 32 : 44,fontWeight:700,color:"white",lineHeight:1}}>{s.value}</p>
-              <p style={{fontSize: isMobile ? 10 : 11,color:"rgba(255,255,255,.38)",marginTop:8,textTransform:"uppercase",letterSpacing:".12em"}}>{s.label}</p>
-            </div>
-          ))}
-        </div>
-      </div>
 
       {/* ══════════ LOANS ══════════ */}
       <section style={{padding: isMobile ? "64px 20px" : isTablet ? "80px 40px" : "110px 72px",background:"#cacdd2"}}>
