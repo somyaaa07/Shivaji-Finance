@@ -140,7 +140,7 @@ export default function ClearFund() {
       {/* ══════════ HERO ══════════ */}
       <section style={{position:"relative",height:"100vh",minHeight:700,overflow:"hidden"}}>
         <img
-          src="/2.png"
+          src="/7.png"
           alt="Dream home"
           style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover",objectPosition:"center 60%"}}
         />

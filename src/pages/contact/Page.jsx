@@ -186,7 +186,7 @@ const ContactPage = () => {
     }
     .form-card::before {
       content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
-      background: linear-gradient(90deg, transparent, rgba(202,205,210,0.3) 50%, transparent);
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,1) 50%, transparent);
     }
     .form-watermark {
       position: absolute; right: -8px; bottom: -16px;
@@ -194,7 +194,7 @@ const ContactPage = () => {
       color: rgba(202,205,210,0.03); line-height: 1;
       pointer-events: none; user-select: none;
     }
-    .form-tag { font-size: 9px; letter-spacing: 0.45em; text-transform: uppercase; color: rgba(202,205,210,0.32); margin-bottom: 12px; }
+    .form-tag { font-size: 9px; letter-spacing: 0.45em; text-transform: uppercase; color: rgba(255,2555,255,0.92); margin-bottom: 12px; }
     .form-ttl { font-size: 36px; font-weight: 300; color: var(--light); line-height: 1.15; margin-bottom: 6px; }
     .form-ttl em { font-style: italic; }
     .form-sub { font-size: 15px; color: rgba(202,205,210,0.35); margin-bottom: 40px; font-weight: 300; }
@@ -203,20 +203,20 @@ const ContactPage = () => {
     .f { display: flex; flex-direction: column; gap: 7px; }
     .f-lbl {
       font-size: 9px; letter-spacing: 0.3em; text-transform: uppercase;
-      color: rgba(202,205,210,0.32); transition: color 0.2s;
+      color: rgba(255,255,255,0.82); transition: color 0.2s;
     }
-    .f.on .f-lbl { color: rgba(202,205,210,0.72); }
+    .f.on .f-lbl { color: rgba(255,255,255,0.72); }
     .f-inp {
       background: rgba(202,205,210,0.05);
       border: 1px solid rgba(202,205,210,0.1);
-      border-bottom-color: rgba(202,205,210,0.2);
+      border-bottom-color: rgba(255,255,255,0.9);
       color: var(--light);
       font-family: 'Cormorant Garamond', serif; font-size: 16px;
       padding: 13px 16px; outline: none; width: 100%;
       transition: border-color 0.25s, background 0.25s;
     }
-    .f-inp::placeholder { color: rgba(202,205,210,0.18); }
-    .f-inp:focus { border-color: rgba(202,205,210,0.45); background: rgba(202,205,210,0.08); }
+    .f-inp::placeholder { color: rgba(255,255,255,0.9); }
+    .f-inp:focus { border-color: rgba(255,255,255,0.95); background: rgba(202,205,210,0.08); }
     select.f-inp option { background: var(--dark); color: var(--light); }
     textarea.f-inp { resize: none; }
     .sub-btn {

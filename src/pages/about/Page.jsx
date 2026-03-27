@@ -135,10 +135,10 @@ export default function About() {
       {/* ══════════════════════════════════════════
           HERO
       ══════════════════════════════════════════ */}
-      <section ref={heroRef} style={{ position: "relative", minHeight: "100vh", display: "flex", alignItems: "flex-end", overflow: "hidden" }}>
+      <section ref={heroRef} style={{ position: "relative", minHeight: "70vh", display: "flex",  overflow: "hidden" }}>
         <div style={{
           position: "absolute", inset: 0,
-          backgroundImage: `url(/3.png)`,
+          backgroundImage: `url(/8.png)`,
           backgroundSize: "cover", backgroundPosition: "center ",
         }} />
     
