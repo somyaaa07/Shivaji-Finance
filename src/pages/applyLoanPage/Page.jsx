@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState,useEffect } from "react";
 import {
   CheckCircle2, Circle, FileText, Printer, ChevronDown,
   BadgeCheck, Users, IndianRupee, Clock, Shield, Smartphone,
@@ -159,6 +159,11 @@ export default function ApplyLoanPage() {
   const activeData = CHECKLISTS[activeTab];
   const progress = getProgress(activeTab);
   const openApply = () => setShowApplyForm(true);
+
+
+useEffect(() => {
+  window.scrollTo(0, 0);
+}, []);
 
   return (
     <div style={{ fontFamily: "'DM Sans', sans-serif", background: "#cacdd2", minHeight: "100vh", color: "#2B394B" }}>

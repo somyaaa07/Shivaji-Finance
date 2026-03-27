@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState,useEffect } from "react";
 import {
   Home, Car, GraduationCap, Briefcase, HeartPulse, Plane,
   User, Banknote, BarChart2, Building2, Globe, ClipboardList,
@@ -248,6 +248,11 @@ export default function LoanServicePage() {
     setActiveFaq(null);
     setSidebarOpen(false);
   };
+
+
+useEffect(() => {
+  window.scrollTo(0, 0);
+}, []);
 
   return (
     <div className="min-h-screen font-serif" style={{ backgroundColor: "#e8eaed", color: "#2b394b" }}>

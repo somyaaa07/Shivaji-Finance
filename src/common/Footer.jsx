@@ -18,8 +18,8 @@ const BADGES = [
 ];
 
 const CONTACT = [
-  { label: "Email",   value: "hello@shivajifinance.com",          icon: <Mail size={13} /> },
-  { label: "Phone",   value: "+91 9999999999",                    icon: <Phone size={13} /> },
+  { label: "Email",   value: "support@shivaji.com", icon: <Mail size={13} /> },
+  { label: "Phone",   value: "+91 9990607660",                    icon: <Phone size={13} /> },
   { label: "Address", value: "Galaxy Diamond Plaza, Gr. Noida, 201030", icon: <MapPin size={13} /> },
 ];
 

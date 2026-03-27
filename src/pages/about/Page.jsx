@@ -1,810 +1,591 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 
-// ── PALETTE ──
-const C = {
-  navy: "#1a2535",
-  navyDark: "#2b394b",
-  navyMid: "#243044",
-  navyLight: "#2e3d52",
-  slate: "#4a6080",
-  slateLight: "#6b84a0",
-  accent: "#5b7fa6",
-  accentLight: "#7fa3c8",
-  cream: "#cacdd2",
-  white: "#fff",
-  text: "#1a2535",
-  textMuted: "#6b7a8d",
-  border: "#e2e6ea",
-  greyLight: "#f2f4f7",
+function useBreakpoint() {
+  const [w, setW] = useState(typeof window !== "undefined" ? window.innerWidth : 1200);
+  useEffect(() => {
+    const fn = () => setW(window.innerWidth);
+    window.addEventListener("resize", fn);
+    return () => window.removeEventListener("resize", fn);
+  }, []);
+  return { isMobile: w < 640, isTablet: w < 1024, isSmall: w < 480, width: w };
+}
+
+const Icon = ({ name, size = 20, style = {} }) => {
+  const p = { width: size, height: size, viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: "1.8", strokeLinecap: "round", strokeLinejoin: "round", style: { display: "block", ...style } };
+  const icons = {
+    home:       <svg {...p}><path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H4a1 1 0 01-1-1V9.5z"/><path d="M9 21V12h6v9"/></svg>,
+    car:        <svg {...p}><path d="M5 17H3v-5l2-5h14l2 5v5h-2"/><circle cx="7.5" cy="17" r="1.5"/><circle cx="16.5" cy="17" r="1.5"/><path d="M5 12h14"/></svg>,
+    briefcase:  <svg {...p}><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/></svg>,
+    graduation: <svg {...p}><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3 3 9 3 12 0v-5"/></svg>,
+    check:      <svg {...p} strokeWidth="2.5"><polyline points="20 6 9 17 4 12"/></svg>,
+    arrow:      <svg {...p} strokeWidth="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>,
+    shield:     <svg {...p}><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>,
+    clock:      <svg {...p}><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>,
+    star:       <svg {...p} fill="currentColor" stroke="none"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>,
+    users:      <svg {...p}><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>,
+    zap:        <svg {...p}><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>,
+    quote:      <svg {...p} fill="currentColor" stroke="none"><path d="M4.583 17.321C3.553 16.227 3 15 3 13.011c0-3.5 2.457-6.637 6.03-8.188l.893 1.378c-3.335 1.804-3.987 4.145-4.247 5.621.537-.278 1.24-.375 1.929-.311 1.804.167 3.226 1.648 3.226 3.489a3.5 3.5 0 01-3.5 3.5c-1.073 0-2.099-.49-2.748-1.179zm10 0C13.553 16.227 13 15 13 13.011c0-3.5 2.457-6.637 6.03-8.188l.893 1.378c-3.335 1.804-3.987 4.145-4.247 5.621.537-.278 1.24-.375 1.929-.311 1.804.167 3.226 1.648 3.226 3.489a3.5 3.5 0 01-3.5 3.5c-1.073 0-2.099-.49-2.748-1.179z"/></svg>,
+    phone:      <svg {...p}><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81a19.79 19.79 0 01-3.07-8.67A2 2 0 012.18 1h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.91 8.15a16 16 0 006.72 6.72l1.52-1.52a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 16.92z"/></svg>,
+    rupee:      <svg {...p} strokeWidth="2"><line x1="6" y1="6" x2="18" y2="6"/><line x1="6" y1="12" x2="18" y2="12"/><path d="M6 12l6 8"/><path d="M6 6h8a4 4 0 010 8H6"/></svg>,
+    plus:       <svg {...p} strokeWidth="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>,
+    document:   <svg {...p}><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>,
+  };
+  return icons[name] || null;
 };
 
-const features = [
-  { icon: "◈", title: "Integrity First", desc: "Every decision is made with complete transparency and in your best interest." },
-  { icon: "◎", title: "Right Time. Every Time.", desc: "Punctual service ensures smooth operations and lasting partnerships." },
-  { icon: "◆", title: "Strategic Insights", desc: "Thorough analysis empowers you to optimize strategies and reduce risks." },
+const LOANS = [
+  { icon: "home",       title: "Home Loan",     rate: "7.5%", tag: "Most Popular",     desc: "Flexible tenures up to 30 years with zero processing fees" },
+  { icon: "car",        title: "Auto Loan",      rate: "8.2%", tag: "Instant Disbursal",desc: "Same-day release with zero hidden charges guaranteed" },
+  { icon: "briefcase",  title: "Business Loan",  rate: "9.0%", tag: "Up to ₹50 Lakhs", desc: "Flexible capital solutions tailored to your business" },
+  { icon: "graduation", title: "Education Loan", rate: "6.8%", tag: "Lowest EMI",       desc: "Finance premier institutions with ease and confidence" },
 ];
 
-const steps = [
-  { num: "01", title: "Sign Up with ID Card", desc: "Quick identity verification to get started securely." },
-  { num: "02", title: "User Configuration", desc: "Set your financial goals and risk preferences." },
-  { num: "03", title: "Select Investment Plan", desc: "Choose from curated plans tailored to your needs." },
-  { num: "04", title: "Enter the Transaction", desc: "Fund your account safely and start investing." },
-  { num: "05", title: "Enjoy Full Access", desc: "Track your portfolio and access expert guidance anytime." },
+const STATS = [
+  { value: "₹2,500Cr+", label: "Disbursed",      icon: "rupee" },
+  { value: "1.2L+",     label: "Customers",       icon: "users" },
+  { value: "48 hrs",    label: "Avg. Approval",   icon: "clock" },
+  { value: "4.9 ★",     label: "Customer Rating", icon: "star"  },
 ];
 
-const team = [
-  { name: "Rajesh Shivaji", role: "Founder & CEO", exp: "28 yrs", quote: "Wealth is built through discipline, not luck." },
-  { name: "Priya Menon", role: "Chief Investment Officer", exp: "18 yrs", quote: "Smart investing means aligning money with purpose." },
-  { name: "Arjun Kulkarni", role: "Head of Wealth Management", exp: "15 yrs", quote: "Every portfolio tells a personal story." },
+const STEPS = [
+  { icon: "document", num: "01", title: "Apply Online",       desc: "3-minute digital application with just the basics" },
+  { icon: "shield",   num: "02", title: "Quick Verification", desc: "Real-time document verification in minutes" },
+  { icon: "zap",      num: "03", title: "Instant Disbursal",  desc: "Funds credited to your account within 48 hours" },
 ];
 
-const foundationItems = [
-  {
-    tag: "Our Mission",
-    heading: "Empowering Every Financial Decision",
-    body: "To provide every Indian household and business with access to world-class financial planning, investment expertise, and wealth management — making prosperity accessible, not exclusive. We exist to simplify complex financial landscapes into clear, confident decisions.",
-    stats: [{ v: "24+", l: "Years" }, { v: "12k+", l: "Clients" }],
-    img: "/about-img/img3.jpg",
-  },
-  {
-    tag: "Our Vision",
-    heading: "A Financially Secure India by 2030",
-    body: "To be India's most trusted financial partner — known not just for the returns we generate, but for the lives we transform. We envision a future where every family we serve moves from financial anxiety to financial confidence, backed by strategies built to last generations.",
-    quote: "Wealth is not about having a lot of money; it's about having a lot of options.",
-    img: "/about-img/img2.jpg",
-  },
-  {
-    tag: "Our Values",
-    heading: "Principles That Drive Everything We Do",
-    body: "Transparency, Excellence, Legacy, Partnership — these aren't just words on a wall. They are the lens through which every investment decision, every client conversation, and every strategic recommendation is made at Shivaji Finance.",
-    values: ["Transparency", "Excellence", "Legacy", "Partnership"],
-    img: "/about-img/img1.jpg",
-  },
+const TESTIMONIALS = [
+  { name: "Priya Sharma", role: "Homeowner · Mumbai",     text: "The entire process was seamless. Got my home loan approved in just 2 days!", rating: 5, initials: "PS" },
+  { name: "Rahul Mehta",  role: "Business Owner · Delhi", text: "ClearFund offered the best rates and their support team was exceptional.",    rating: 5, initials: "RM" },
+  { name: "Anita Rao",    role: "Student · Bengaluru",    text: "Education loan process was smooth and transparent. Highly recommended!",       rating: 5, initials: "AR" },
 ];
 
-// ── HOOKS ──
-function useWindowWidth() {
-  const [width, setWidth] = useState(
-    typeof window !== "undefined" ? window.innerWidth : 1200
-  );
-  useEffect(() => {
-    const handler = () => setWidth(window.innerWidth);
-    window.addEventListener("resize", handler);
-    return () => window.removeEventListener("resize", handler);
-  }, []);
-  return width;
-}
+const FAQS = [
+  { q: "What documents are required?",  a: "PAN card, Aadhar, bank statements (last 6 months), income proof, and address proof." },
+  { q: "How long does approval take?",  a: "Most applications get approved within 48 hours after complete document submission." },
+  { q: "Is there a prepayment penalty?",a: "No. We charge zero prepayment penalty — pay off anytime without extra cost." },
+  { q: "Does it affect my CIBIL score?",a: "Checking your eligibility is a soft inquiry and has no impact on your CIBIL score." },
+];
 
-function useInView(threshold = 0.12) {
-  const ref = useRef(null);
-  const [inView, setInView] = useState(false);
-  useEffect(() => {
-    const obs = new IntersectionObserver(
-      ([e]) => { if (e.isIntersecting) setInView(true); },
-      { threshold }
-    );
-    if (ref.current) obs.observe(ref.current);
-    return () => obs.disconnect();
-  }, []);
-  return [ref, inView];
-}
+const D = "#2b394b";
 
-function AnimatedCounter({ target, suffix = "" }) {
-  const [count, setCount] = useState(0);
-  const [ref, inView] = useInView();
-  const numericTarget = parseInt(String(target).replace(/\D/g, "")) || 0;
-  useEffect(() => {
-    if (!inView) return;
-    let s = 0;
-    const step = Math.max(1, Math.ceil(numericTarget / 60));
-    const t = setInterval(() => {
-      s += step;
-      if (s >= numericTarget) { setCount(numericTarget); clearInterval(t); }
-      else setCount(s);
-    }, 20);
-    return () => clearInterval(t);
-  }, [inView, numericTarget]);
-  return <span ref={ref}>{count.toLocaleString("en-IN")}{suffix}</span>;
-}
+export default function ClearFund() {
+  const { isMobile, isTablet, isSmall } = useBreakpoint();
+  const [amount, setAmount] = useState(1000000);
+  const [tenure, setTenure] = useState(10);
+  const [activeFaq, setFaq]  = useState(null);
 
-export default function About() {
-  const w = useWindowWidth();
-  const isMobile  = w < 640;
-  const isTablet  = w >= 640 && w < 1024;
-  const isDesktop = w >= 1024;
+  const sp = isMobile ? "20px" : isTablet ? "40px" : "72px";
+  const r = 8.5 / 1200, n = tenure * 12;
+  const emi      = Math.round((amount * r * Math.pow(1+r,n)) / (Math.pow(1+r,n)-1));
+  const total    = emi * n;
+  const interest = total - amount;
+  const fmt      = v => v.toLocaleString("en-IN");
+  const apPct    = ((amount - 50000) / 4950000) * 100;
+  const tpPct    = ((tenure - 1) / 29) * 100;
 
-  const [heroRef,    heroIn]    = useInView(0.05);
-  const [featRef,    featIn]    = useInView(0.1);
-  const [aboutRef,   aboutIn]   = useInView(0.1);
-  const [missionRef, missionIn] = useInView(0.05);
-  const [stepsRef,   stepsIn]   = useInView(0.1);
-  const [teamRef,    teamIn]    = useInView(0.1);
-  const [ctaRef,     ctaIn]     = useInView(0.1);
 
-  // Shorthand padding helpers
-  const sectionPad  = isMobile ? "72px 0" : isTablet ? "88px 0" : "120px 0";
-  const sidePad     = isMobile ? "0 20px" : isTablet ? "0 32px" : "0 56px";
+
+useEffect(() => {
+  window.scrollTo(0, 0);
+}, []);
 
   return (
-    <div style={{ fontFamily: "'DM Sans', sans-serif", background: C.white, color: C.text, overflowX: "hidden" }}>
+    <div style={{ fontFamily:"'Sora',sans-serif", background:"#cacdd2", color:D, overflowX:"hidden" }}>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600;1,700&family=DM+Sans:wght@300;400;500;600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;0,800;1,600;1,700&display=swap');
+        *,*::before,*::after{box-sizing:border-box}
 
-        *, *::before, *::after { box-sizing: border-box; }
+        @keyframes fadeUp{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:translateY(0)}}
+        @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+        @keyframes floatY{0%,100%{transform:translateY(0)}50%{transform:translateY(-14px)}}
+        @keyframes blink{0%,100%{opacity:1}50%{opacity:.25}}
+        @keyframes shimX{0%{transform:translateX(-120%)}100%{transform:translateX(120%)}}
 
-        .fade-up { opacity: 0; transform: translateY(40px); transition: opacity 0.75s cubic-bezier(.22,1,.36,1), transform 0.75s cubic-bezier(.22,1,.36,1); }
-        .fade-up.in { opacity: 1; transform: translateY(0); }
-        .fade-in { opacity: 0; transition: opacity 0.9s ease; }
-        .fade-in.in { opacity: 1; }
-        .d1 { transition-delay: 0.05s; } .d2 { transition-delay: 0.18s; } .d3 { transition-delay: 0.3s; }
-        .d4 { transition-delay: 0.42s; } .d5 { transition-delay: 0.54s; }
-        .hover-up { transition: transform 0.3s cubic-bezier(.22,1,.36,1); cursor: default; }
-        .hover-up:hover { transform: translateY(-5px); }
+        .fu{animation:fadeUp .65s cubic-bezier(.22,.68,0,1.1) forwards;opacity:0}
+        .d1{animation-delay:.12s}.d2{animation-delay:.24s}.d3{animation-delay:.36s}
+        .d4{animation-delay:.48s}.d5{animation-delay:.6s}
 
-        .step-card { transition: all 0.3s ease; cursor: default; }
-        .step-card:hover { background: ${C.navyDark} !important; border-color: ${C.navy} !important; }
-        .step-card:hover .snum  { color: ${C.accentLight} !important; }
-        .step-card:hover .stitle { color: ${C.white} !important; }
-        .step-card:hover .sdesc  { color: rgba(255,255,255,0.55) !important; }
+        .btn-dark{background:${D};color:white;border:none;border-radius:7px;padding:12px 28px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;letter-spacing:.02em;transition:transform .2s,box-shadow .2s;white-space:nowrap}
+        .btn-dark:hover{transform:translateY(-2px);box-shadow:0 10px 28px rgba(43,57,75,.35)}
+        .btn-outline{background:transparent;color:white;border:1.5px solid rgba(255,255,255,.3);border-radius:7px;padding:11px 22px;font-size:14px;font-weight:500;cursor:pointer;font-family:inherit;transition:all .2s;white-space:nowrap}
+        .btn-outline:hover{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.6)}
 
-        .badge-spin { animation: spin 16s linear infinite; transform-origin: 50% 50%; }
-        @keyframes spin { to { transform: rotate(360deg); } }
+        input[type=range]{-webkit-appearance:none;width:100%;height:4px;border-radius:4px;outline:none;cursor:pointer}
+        input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:20px;height:20px;border-radius:50%;background:${D};border:3px solid white;box-shadow:0 2px 10px rgba(43,57,75,.4);cursor:pointer}
 
-        .foundation-img-wrap { border-radius: 8px; overflow: hidden; position: relative; }
-        .foundation-img-wrap img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s ease; display: block; }
-        .foundation-img-wrap:hover img { transform: scale(1.04); }
+        .loan-card{background:white;border-radius:18px;padding:28px;cursor:pointer;border:1px solid rgba(43,57,75,.07);transition:transform .3s,box-shadow .3s;position:relative;overflow:hidden}
+        .loan-card::after{content:'';position:absolute;bottom:0;left:0;right:0;height:3px;background:${D};transform:scaleX(0);transform-origin:left;transition:transform .35s}
+        .loan-card:hover{transform:translateY(-7px);box-shadow:0 22px 56px rgba(43,57,75,.12)}
+        .loan-card:hover::after{transform:scaleX(1)}
 
-        /* ── Hero stats scroll on very small screens ── */
-        .hero-stats { display: flex; }
-        @media (max-width: 480px) {
-          .hero-stats {
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-            scrollbar-width: none;
-            padding-bottom: 4px;
+        .step-card{background:white;border-radius:20px;padding:32px 28px;border:1px solid rgba(43,57,75,.07);transition:transform .3s,box-shadow .3s;position:relative;overflow:hidden}
+        .step-card:hover{transform:translateY(-6px);box-shadow:0 20px 52px rgba(43,57,75,.11)}
+
+        .t-card{background:white;border-radius:18px;padding:28px;border:1px solid rgba(43,57,75,.07);transition:transform .3s,box-shadow .3s}
+        .t-card:hover{transform:translateY(-5px);box-shadow:0 18px 48px rgba(43,57,75,.1)}
+
+        .faq-body{max-height:0;overflow:hidden;transition:max-height .35s ease}
+        .faq-body.open{max-height:180px}
+
+        .shimmer-btn{position:relative;overflow:hidden}
+        .shimmer-btn::after{content:'';position:absolute;top:0;left:0;width:50%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.08),transparent);animation:shimX 3.5s ease infinite}
+
+        /* ─── HERO ─── */
+        /* The hero bg image always fills the section */
+        .hero-bg {
+          position: absolute;
+          inset: 0;
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          object-position: center 60%;
+          display: block;
+        }
+        /* Gradient overlay — stronger on small screens for readability */
+        .hero-overlay {
+          position: absolute;
+          inset: 0;
+          background: linear-gradient(135deg, rgba(0,0,0,.52) 0%, rgba(0,0,0,.28) 60%, rgba(0,0,0,.46) 100%);
+          z-index: 1;
+        }
+        @media(max-width:639px){
+          .hero-overlay{background:linear-gradient(to bottom,rgba(0,0,0,.58) 0%,rgba(0,0,0,.38) 50%,rgba(0,0,0,.62) 100%);}
+        }
+
+        /* Inner layout */
+        .hero-inner{
+          position:relative; z-index:2;
+          width:100%; max-width:1380px; margin:0 auto;
+        }
+        /* Desktop: side-by-side */
+        @media(min-width:1024px){
+          .hero-section{min-height:100vh;}
+          .hero-inner{
+            display:flex; flex-direction:row; align-items:center;
+            min-height:100vh; padding:0 72px; gap:72px;
           }
-          .hero-stats::-webkit-scrollbar { display: none; }
-          .hero-stat-item { flex: 0 0 auto; }
+          .hero-left{flex:1;min-width:0;}
+          .hero-right{
+            flex-shrink:0; width:375px;
+            animation:floatY 5s ease-in-out 1.2s infinite;
+          }
+          .hero-badge{float:right;}
+        }
+        /* Tablet: stacked */
+        @media(min-width:640px) and (max-width:1023px){
+          .hero-section{min-height:auto;}
+          .hero-inner{
+            display:flex; flex-direction:column; align-items:flex-start;
+            padding:110px 40px 60px; gap:44px;
+          }
+          .hero-left{width:100%;}
+          .hero-right{width:100%;max-width:460px;animation:none!important;}
+          .hero-badge{float:right;}
+        }
+        /* Mobile */
+        @media(max-width:639px){
+          .hero-section{min-height:auto;}
+          .hero-inner{
+            display:flex; flex-direction:column; align-items:flex-start;
+            padding:88px 20px 40px; gap:32px;
+          }
+          .hero-left{width:100%;}
+          .hero-right{width:100%;animation:none!important;}
+          .hero-badge{float:none;margin-top:10px;display:inline-flex;}
+        }
+        @media(max-width:374px){
+          .hero-inner{padding:76px 16px 32px;gap:24px;}
         }
 
-        /* ── Features grid ── */
-        .features-grid { display: grid; grid-template-columns: repeat(3, 1fr); }
-        @media (max-width: 767px) {
-          .features-grid { grid-template-columns: 1fr; }
-          .features-grid > div { border-right: none !important; border-bottom: 1px solid rgba(255,255,255,0.06); }
-          .features-grid > div:last-child { border-bottom: none; }
+        /* ─── Rest of page ─── */
+        @media(max-width:639px){
+          .stats-grid{grid-template-columns:1fr 1fr!important}
+          .stats-cell{border-right:none!important;border-bottom:1px solid rgba(255,255,255,.09)!important;padding:28px 16px!important}
+          .loans-header{grid-template-columns:1fr!important;gap:16px!important;margin-bottom:32px!important}
+          .loans-grid{grid-template-columns:1fr!important}
+          .steps-grid{grid-template-columns:1fr!important}
+          .arrow-sep{display:none!important}
+          .emi-grid{grid-template-columns:1fr!important}
+          .emi-right{border-radius:0 0 26px 26px!important}
+          .emi-left{border-radius:26px 26px 0 0!important;padding:40px 28px!important}
+          .testimonials-grid{grid-template-columns:1fr!important}
+          .faq-grid{grid-template-columns:1fr!important;gap:32px!important}
+          .faq-sticky{position:static!important}
+          .cta-grid{grid-template-columns:1fr!important;gap:32px!important;padding:44px 24px!important}
+          .hero-badges{flex-wrap:wrap!important;gap:12px!important}
+          .hero-buttons{flex-wrap:wrap!important}
+          .cta-buttons{flex-wrap:wrap!important}
         }
-        @media (min-width: 768px) and (max-width: 1023px) {
-          .features-grid { grid-template-columns: repeat(3, 1fr); }
+        @media(min-width:640px) and (max-width:1023px){
+          .stats-grid{grid-template-columns:repeat(2,1fr)!important}
+          .stats-cell{border-right:none!important;border-bottom:1px solid rgba(255,255,255,.09)!important}
+          .loans-header{grid-template-columns:1fr!important;gap:20px!important}
+          .loans-grid{grid-template-columns:1fr 1fr!important}
+          .steps-grid{grid-template-columns:1fr!important}
+          .arrow-sep{display:none!important}
+          .emi-grid{grid-template-columns:1fr!important}
+          .emi-right{border-radius:0 0 26px 26px!important}
+          .emi-left{border-radius:26px 26px 0 0!important}
+          .testimonials-grid{grid-template-columns:1fr 1fr!important}
+          .faq-grid{grid-template-columns:1fr!important;gap:32px!important}
+          .faq-sticky{position:static!important}
+          .cta-grid{grid-template-columns:1fr!important;gap:32px!important;padding:52px 40px!important}
         }
-
-        /* ── About section layout ── */
-        .about-inner { display: flex; gap: 88px; align-items: center; }
-        @media (max-width: 1023px) {
-          .about-inner { flex-direction: column; gap: 56px; }
-        }
-
-        /* ── About images container ── */
-        .about-img-wrap { flex: 0 0 500px; position: relative; height: 560px; }
-        @media (max-width: 1023px) {
-          .about-img-wrap { flex: none; width: 100%; height: 420px; max-width: 560px; margin: 0 auto; }
-        }
-        @media (max-width: 480px) {
-          .about-img-wrap { height: 320px; }
-        }
-
-        /* ── Foundation row ── */
-        .foundation-row { display: flex; align-items: center; gap: 88px; }
-        @media (max-width: 1023px) {
-          .foundation-row { flex-direction: column !important; gap: 40px; }
-        }
-
-        /* ── Foundation image ── */
-        .foundation-img-wrap { flex: 0 0 480px; height: 400px; }
-        @media (max-width: 1023px) {
-          .foundation-img-wrap { flex: none; width: 100%; height: 300px; }
-        }
-        @media (max-width: 480px) {
-          .foundation-img-wrap { height: 240px; }
-        }
-
-        /* ── Steps grids ── */
-        .steps-grid-top { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
-        .steps-grid-bottom { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-top: 16px; max-width: 66.7%; }
-        @media (max-width: 767px) {
-          .steps-grid-top    { grid-template-columns: 1fr; }
-          .steps-grid-bottom { grid-template-columns: 1fr; max-width: 100%; }
-        }
-        @media (min-width: 768px) and (max-width: 1023px) {
-          .steps-grid-top    { grid-template-columns: repeat(2, 1fr); }
-          .steps-grid-bottom { grid-template-columns: repeat(2, 1fr); max-width: 100%; }
-        }
-
-        /* ── Team grid ── */
-        .team-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; }
-        @media (max-width: 767px) {
-          .team-grid { grid-template-columns: 1fr; }
-        }
-        @media (min-width: 768px) and (max-width: 1023px) {
-          .team-grid { grid-template-columns: repeat(2, 1fr); }
-        }
-
-        /* ── CTA inner ── */
-        .cta-inner { display: flex; align-items: center; justify-content: space-between; gap: 80px; }
-        @media (max-width: 1023px) {
-          .cta-inner { flex-direction: column; gap: 52px; align-items: flex-start; }
-        }
-
-        /* ── CTA stats ── */
-        .cta-stats { display: flex; flex-direction: column; gap: 2px; flex-shrink: 0; min-width: 260px; }
-        @media (max-width: 1023px) {
-          .cta-stats { width: 100%; max-width: 460px; }
-        }
-        @media (max-width: 480px) {
-          .cta-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 2px; }
-        }
-
-        /* ── Team header ── */
-        .team-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 72px; }
-        @media (max-width: 640px) {
-          .team-header { flex-direction: column; align-items: flex-start; gap: 24px; margin-bottom: 40px; }
-        }
-
-        /* ── Steps header ── */
-        .steps-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 68px; }
-        @media (max-width: 767px) {
-          .steps-header { flex-direction: column; align-items: flex-start; gap: 20px; margin-bottom: 40px; }
-        }
-
-        /* ── Hero buttons ── */
-        .hero-btns { display: flex; gap: 14px; flex-wrap: wrap; margin-bottom: 80px; }
-        @media (max-width: 480px) {
-          .hero-btns { flex-direction: column; }
-          .hero-btns button { width: 100%; text-align: center; justify-content: center; }
-        }
-
-        ::-webkit-scrollbar { width: 5px; }
-        ::-webkit-scrollbar-track { background: ${C.greyLight}; }
-        ::-webkit-scrollbar-thumb { background: ${C.navy}; border-radius: 3px; }
       `}</style>
 
-      {/* ══════════════════════════════════════════
-          HERO
-      ══════════════════════════════════════════ */}
-      <section ref={heroRef} style={{ position: "relative", minHeight: isMobile ? "100svh" : "70vh", display: "flex", overflow: "hidden" }}>
-        <div style={{
-          position: "absolute", inset: 0,
-          backgroundImage: `url(/8.png)`,
-          backgroundSize: "cover", backgroundPosition: "center",
-        }} />
-        <div style={{ position: "absolute", inset: 0, background: isMobile ? "rgba(10,17,28,0.55)" : "transparent" }} />
+      {/* ══════════ HERO ══════════ */}
+      <section className="hero-section" style={{position:"relative",overflow:"hidden",width:"100%"}}>
+        <img src="/7.png" alt="Dream home" className="hero-bg" />
+        <div className="hero-overlay" />
 
-        <div style={{
-          position: "relative", zIndex: 2,
-          maxWidth: 1280, margin: "0 auto",
-          padding: isMobile ? "40px 20px 48px" : isTablet ? "48px 32px 56px" : "20px 56px 18px",
-          width: "100%",
-        }}>
-          <div style={{ maxWidth: 680 }}>
-
-            {/* Badge pill */}
-            <div className={`fade-up ${heroIn ? "in" : ""}`} style={{
-              display: "inline-flex", alignItems: "center", gap: 10,
-              border: "1px solid rgba(255,255,255,0.18)", borderRadius: 2,
-              padding: "7px 20px", marginBottom: isMobile ? 24 : 32,
-              background: "rgba(255,255,255,0.05)",
-            }}>
-              <div style={{ width: 6, height: 6, borderRadius: "50%", background: C.accentLight, boxShadow: `0 0 10px ${C.accent}` }} />
-              <span style={{ fontFamily: "'DM Sans', sans-serif", fontSize: "0.72rem", fontWeight: 600, color: "rgba(255,255,255,0.75)", letterSpacing: "2.5px", textTransform: "uppercase" }}>
-                Est. 2001 · Trusted by 12,000+
-              </span>
+        <div className="hero-inner">
+          {/* Left */}
+          <div className="hero-left">
+            <div className="fu" style={{display:"inline-flex",alignItems:"center",gap:8,background:"rgba(255,255,255,.09)",backdropFilter:"blur(12px)",border:"1px solid rgba(255,255,255,.13)",borderRadius:100,padding:"6px 16px",marginBottom:24}}>
+              <span style={{width:6,height:6,borderRadius:"50%",background:"#6ee7b7",display:"inline-block",animation:"blink 2s infinite"}}/>
+              <span style={{fontSize:isSmall?10:11,color:"rgba(255,255,255,.75)",fontWeight:600,letterSpacing:".1em",textTransform:"uppercase"}}>Trusted by 1,00,000+ Indians</span>
             </div>
 
-            {/* Headline */}
-            <h1 className={`fade-up d1 ${heroIn ? "in" : ""}`} style={{
-              fontFamily: "'Cormorant Garamond', serif",
-              fontSize: isMobile ? "2.8rem" : isTablet ? "3.6rem" : "clamp(3rem, 5.5vw, 5rem)",
-              fontWeight: 700, color: C.white,
-              lineHeight: 1.08, marginBottom: isMobile ? 20 : 26, letterSpacing: "-0.5px",
+            <h1 className="fu d1" style={{
+              fontFamily:"'Playfair Display',serif",
+              fontSize:isSmall?"clamp(36px,10vw,50px)":isMobile?"clamp(44px,12vw,64px)":isTablet?"clamp(48px,7vw,72px)":"clamp(54px,6.5vw,92px)",
+              lineHeight:1.0,fontWeight:800,color:"white",marginBottom:20
             }}>
-              Enabling Your Path<br />
-              to <em style={{ color: C.accentLight, fontStyle: "italic" }}>Financial</em><br />
-              Growth &amp; Success
+              Smart Loans<br/>for Your<br/>
+              <em style={{fontStyle:"italic",color:"rgba(255,255,255,.55)"}}>Dreams.</em>
             </h1>
 
-            <p className={`fade-up d2 ${heroIn ? "in" : ""}`} style={{
-              fontSize: isMobile ? "0.95rem" : "1.05rem",
-              color: "rgba(255,255,255,0.58)", lineHeight: 1.82,
-              marginBottom: isMobile ? 32 : 44, maxWidth: 500, fontWeight: 300,
-            }}>
-              Empowering your financial journey with the right tools and expert guidance —
-              helping you grow, manage, and achieve lasting success for over 24 years.
+            <p className="fu d2" style={{fontSize:isMobile?14:16,color:"rgba(255,255,255,.5)",lineHeight:1.9,maxWidth:420,marginBottom:32}}>
+              Get instant approval, competitive rates, and zero hidden charges. Your financial freedom starts here.
             </p>
 
-            {/* CTA buttons */}
-            <div className={`fade-up d3 ${heroIn ? "in" : ""} hero-btns`}>
-              <button style={{
-                background: C.white, color: C.navyDark,
-                border: "none", borderRadius: 4,
-                padding: "14px 38px", fontFamily: "'DM Sans', sans-serif",
-                fontWeight: 700, fontSize: "0.9rem", cursor: "pointer",
-                letterSpacing: "0.4px", transition: "all 0.25s",
-                boxShadow: "0 8px 28px rgba(0,0,0,0.3)",
-              }}
-                onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-2px)"; e.currentTarget.style.boxShadow = "0 14px 36px rgba(0,0,0,0.4)"; }}
-                onMouseLeave={e => { e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.boxShadow = "0 8px 28px rgba(0,0,0,0.3)"; }}
-              >Get Started →</button>
-              <button style={{
-                background: "transparent", color: C.white,
-                border: "1px solid rgba(255,255,255,0.28)", borderRadius: 4,
-                padding: "14px 32px", fontFamily: "'DM Sans', sans-serif",
-                fontWeight: 500, fontSize: "0.9rem", cursor: "pointer", transition: "all 0.25s",
-              }}
-                onMouseEnter={e => { e.currentTarget.style.borderColor = "rgba(255,255,255,0.65)"; e.currentTarget.style.background = "rgba(255,255,255,0.07)"; }}
-                onMouseLeave={e => { e.currentTarget.style.borderColor = "rgba(255,255,255,0.28)"; e.currentTarget.style.background = "transparent"; }}
-              >Learn More</button>
+            <div className="fu d3 hero-buttons" style={{display:"flex",gap:12,marginBottom:36,flexWrap:"wrap"}}>
+              <button className="btn-dark" style={{padding:isMobile?"13px 28px":"14px 36px",fontSize:isMobile?14:15,borderRadius:8}}>
+                Check Eligibility →
+              </button>
+              <button className="btn-outline" style={{padding:isMobile?"12px 20px":"14px 24px",fontSize:isMobile?14:15,borderRadius:8,display:"flex",alignItems:"center",gap:8}}>
+                <Icon name="phone" size={15} style={{color:"white"}}/> Talk to Expert
+              </button>
             </div>
 
-            {/* Stats row */}
-            <div className={`fade-up d4 ${heroIn ? "in" : ""} hero-stats`} style={{
-              borderTop: "1px solid rgba(255,255,255,0.1)", paddingTop: isMobile ? 24 : 36,
-            }}>
-              {[
-                { value: "24",    suffix: "+",    label: "Years of Experience" },
-                { value: "500",   suffix: "Cr+",  label: "Assets Managed" },
-                { value: "12000", suffix: "+",    label: "Happy Clients" },
-                { value: "98",    suffix: "%",    label: "Client Retention" },
-              ].map((s, i) => (
-                <div key={i} className="hero-stat-item" style={{
-                  paddingRight: isMobile ? 28 : 44,
-                  marginRight:  isMobile ? 28 : 44,
-                  borderRight: i < 3 ? "1px solid rgba(255,255,255,0.08)" : "none",
-                  flexShrink: 0,
-                }}>
-                  <div style={{ fontFamily: "'Cormorant Garamond', serif", fontSize: isMobile ? "1.6rem" : "2.1rem", fontWeight: 700, color: C.white, lineHeight: 1 }}>
-                    <AnimatedCounter target={s.value} suffix={s.suffix} />
+            <div className="fu d4 hero-badges" style={{display:"flex",gap:isMobile?12:24,flexWrap:"wrap"}}>
+              {["RBI Regulated","256-bit SSL","Zero Hidden Fees"].map(b=>(
+                <div key={b} style={{display:"flex",alignItems:"center",gap:7}}>
+                  <div style={{width:18,height:18,borderRadius:"50%",background:"rgba(255,255,255,.1)",border:"1px solid rgba(255,255,255,.18)",display:"flex",alignItems:"center",justifyContent:"center"}}>
+                    <Icon name="check" size={9} style={{color:"rgba(255,255,255,.8)"}}/>
                   </div>
-                  <div style={{ fontSize: "0.68rem", color: "rgba(255,255,255,0.38)", fontWeight: 500, letterSpacing: "0.5px", marginTop: 6, whiteSpace: "nowrap" }}>{s.label}</div>
+                  <span style={{fontSize:isMobile?11:12,color:"rgba(255,255,255,.4)",fontWeight:500}}>{b}</span>
                 </div>
               ))}
             </div>
           </div>
-        </div>
 
-        {/* Spinning badge — hidden on mobile */}
-        {!isMobile && (
-          <div style={{ position: "absolute", bottom: isTablet ? 32 : 52, right: isTablet ? 32 : 80, zIndex: 3 }}>
-            <div style={{ position: "relative", width: 112, height: 112 }}>
-              <svg className="badge-spin" width="112" height="112" viewBox="0 0 112 112" style={{ position: "absolute" }}>
-                <defs><path id="bp3" d="M56,8 A48,48 0 1,1 55.99,8" /></defs>
-                <text fill="rgba(255,255,255,0.3)" fontSize="9" fontFamily="DM Sans,sans-serif" fontWeight="600" letterSpacing="3.5">
-                  <textPath href="#bp3">Shivaji Finance • Est. 2001 •</textPath>
-                </text>
-              </svg>
-              <div style={{
-                position: "absolute", inset: 18, borderRadius: "50%",
-                background: "rgba(255,255,255,0.08)", backdropFilter: "blur(12px)",
-                border: "1px solid rgba(255,255,255,0.15)",
-                display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
-              }}>
-                <span style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 700, color: C.white, fontSize: "1.35rem", lineHeight: 1 }}>24+</span>
-                <span style={{ color: "rgba(255,255,255,0.5)", fontSize: "0.5rem", fontWeight: 700, letterSpacing: "1px", textTransform: "uppercase" }}>Yrs Trust</span>
-              </div>
-            </div>
-          </div>
-        )}
-      </section>
-
-      {/* ══════════════════════════════════════════
-          FEATURES STRIP
-      ══════════════════════════════════════════ */}
-      <section ref={featRef} style={{ background: C.navyDark, borderBottom: "1px solid rgba(255,255,255,0.05)" }}>
-        <div style={{ maxWidth: 1280, margin: "0 auto" }}>
-          <div className="features-grid">
-            {features.map((f, i) => (
-              <div key={i} className={`fade-up d${i + 1} ${featIn ? "in" : ""}`} style={{
-                padding: isMobile ? "36px 24px" : isTablet ? "40px 32px" : "48px 44px",
-                borderRight: !isMobile && i < 2 ? "1px solid rgba(255,255,255,0.06)" : "none",
-                display: "flex", gap: 22, alignItems: "flex-start",
-              }}>
+          {/* Right — float card */}
+          <div className="hero-right fu d3">
+            <div style={{
+              background:"rgba(255,255,255,.065)",backdropFilter:"blur(28px)",
+              border:"1px solid rgba(255,255,255,.13)",borderRadius:24,
+              padding:isMobile?24:34,
+              boxShadow:"0 40px 100px rgba(0,0,0,.45)",
+            }}>
+              <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:6}}>
                 <div>
-                  <h3 style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 700, fontSize: "1.18rem", color: C.white, marginBottom: 9 }}>{f.title}</h3>
-                  <p style={{ fontSize: "0.86rem", color: "rgba(255,255,255,0.45)", lineHeight: 1.72 }}>{f.desc}</p>
+                  <p style={{fontSize:10,color:"rgba(255,255,255,.35)",textTransform:"uppercase",letterSpacing:".12em",marginBottom:8}}>Pre-approved Offer</p>
+                  <p style={{fontFamily:"'Playfair Display',serif",fontSize:isMobile?44:54,fontWeight:700,color:"white",lineHeight:1}}>₹15L</p>
+                </div>
+                <div style={{background:"white",width:48,height:48,borderRadius:14,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>
+                  <Icon name="zap" size={22} style={{color:D}}/>
                 </div>
               </div>
-            ))}
-          </div>
-        </div>
-      </section>
+              <p style={{fontSize:12,color:"rgba(255,255,255,.28)",marginBottom:22}}>Exclusive offer · valid 72 hours</p>
 
-      {/* ══════════════════════════════════════════
-          ABOUT US
-      ══════════════════════════════════════════ */}
-      <section ref={aboutRef} style={{ background: C.cream, padding: sectionPad }}>
-        <div style={{ maxWidth: 1280, margin: "0 auto", padding: sidePad }}>
-          <div className="about-inner">
-
-            {/* LEFT — stacked images */}
-            <div className={`fade-in ${aboutIn ? "in" : ""} about-img-wrap`}>
-              {/* Main image */}
-              <div style={{
-                position: "absolute", top: 0, left: 0,
-                width: isMobile ? "72%" : "68%",
-                height: isMobile ? "76%" : "75%",
-                borderRadius: "4px 4px 60px 4px", overflow: "hidden",
-                boxShadow: "0 32px 72px rgba(26,37,53,0.16)",
-              }}>
-                <img src="https://i.pinimg.com/736x/47/c2/26/47c22631fef301d3cb16e812f82ca7fa.jpg"
-                  alt="Finance advisor"
-                  style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "center top" }} />
-                <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to bottom, transparent 55%, rgba(15,24,36,0.65) 100%)" }} />
-              </div>
-
-              {/* Secondary image */}
-              <div style={{
-                position: "absolute", bottom: 0, right: 0,
-                width: isMobile ? "48%" : "43%",
-                height: isMobile ? "48%" : "54%",
-                borderRadius: "4px 4px 4px 60px", overflow: "hidden",
-                boxShadow: "0 24px 56px rgba(26,37,53,0.2)",
-                border: `4px solid ${C.cream}`,
-              }}>
-                <img src="/about-img/img4.jpg" alt="Team meeting"
-                  style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-              </div>
-
-              {/* AUM badge */}
-              <div style={{
-                position: "absolute",
-                top: isMobile ? "60%" : "67%",
-                left: isMobile ? "-8px" : "-36px",
-                zIndex: 5,
-                background: C.navyDark, borderRadius: 8,
-                padding: isMobile ? "8px 14px" : "10px 20px",
-                boxShadow: "0 16px 48px rgba(26,37,53,0.28)",
-                border: "1px solid rgba(91,127,166,0.15)", minWidth: 148,
-              }}>
-                <div style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 700, fontSize: isMobile ? "1.5rem" : "2rem", color: C.white, lineHeight: 1 }}>₹500Cr+</div>
-                <div style={{ fontSize: "0.72rem", color: "rgba(255,255,255,0.42)", fontWeight: 500, marginTop: 6, letterSpacing: "0.4px" }}>Assets Under Management</div>
-              </div>
-            </div>
-
-            {/* RIGHT — text */}
-            <div className={`fade-up d2 ${aboutIn ? "in" : ""}`} style={{ flex: 1 }}>
-              <div style={{ fontSize: "0.7rem", fontWeight: 700, letterSpacing: "3px", textTransform: "uppercase", color: C.accent, marginBottom: 18 }}>About Us</div>
-              <h2 style={{
-                fontFamily: "'Cormorant Garamond', serif", fontWeight: 700,
-                fontSize: isMobile ? "2rem" : isTablet ? "2.4rem" : "clamp(2rem, 3.5vw, 3rem)",
-                color: C.navy, lineHeight: 1.15, marginBottom: 10,
-              }}>
-                Trusted guidance for<br />
-                <em style={{ color: C.slate, fontStyle: "italic" }}>financial growth</em>
-              </h2>
-              <div style={{ width: 48, height: 2, background: C.slate, marginBottom: 28, marginTop: 16, opacity: 0.4 }} />
-
-              <p style={{ fontSize: "0.97rem", color: C.textMuted, lineHeight: 1.84, marginBottom: 36 }}>
-                Shivaji Finance has been empowering individuals and businesses across India for over 24 years.
-                Founded in 2001 by Rajesh Shivaji, we craft personalized financial strategies designed to align
-                with your specific goals, challenges, and growth potential.
-              </p>
-
-              <div style={{ display: "flex", flexDirection: "column", gap: 22, marginBottom: 44 }}>
-                {[
-                  { title: "Strategic Financial Planning", desc: "Personalized strategies aligned with your specific goals, challenges, and growth potential." },
-                  { title: "Boost Your Returns", desc: "Smart investment campaigns — from mutual funds to equities — designed to grow wealth steadily." },
-                  { title: "Dedicated Expert Guidance", desc: "A dedicated advisor walks with you every step, ensuring every financial decision is well-informed." },
-                ].map((item, i) => (
-                  <div key={i} style={{ display: "flex", gap: 16, alignItems: "flex-start" }}>
-                    <div style={{
-                      width: 28, height: 28, borderRadius: "50%", flexShrink: 0,
-                      background: "rgba(74,96,128,0.1)",
-                      display: "flex", alignItems: "center", justifyContent: "center", marginTop: 2,
-                    }}>
-                      <div style={{ width: 7, height: 7, borderRadius: "50%", background: C.slate }} />
-                    </div>
-                    <div>
-                      <div style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 700, fontSize: "1.05rem", color: C.navy, marginBottom: 4 }}>{item.title}</div>
-                      <div style={{ fontSize: "0.87rem", color: C.textMuted, lineHeight: 1.68 }}>{item.desc}</div>
-                    </div>
+              <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:10,marginBottom:22}}>
+                {[["Rate","7.5%"],["Tenure","30 yrs"],["EMI","₹12,450"]].map(([l,v])=>(
+                  <div key={l} style={{background:"rgba(255,255,255,.07)",borderRadius:11,padding:"11px 6px",textAlign:"center",border:"1px solid rgba(255,255,255,.08)"}}>
+                    <p style={{fontSize:9,color:"rgba(255,255,255,.3)",textTransform:"uppercase",letterSpacing:".1em",marginBottom:5}}>{l}</p>
+                    <p style={{fontSize:15,fontWeight:700,color:"white"}}>{v}</p>
                   </div>
                 ))}
               </div>
 
-              <button style={{
-                background: C.navy, color: C.white, border: "none",
-                borderRadius: 4, padding: "14px 36px",
-                fontFamily: "'DM Sans', sans-serif", fontWeight: 600, fontSize: "0.9rem",
-                cursor: "pointer", display: "inline-flex", alignItems: "center", gap: 10, transition: "all 0.25s",
-                width: isMobile ? "100%" : "auto", justifyContent: isMobile ? "center" : "flex-start",
-              }}
-                onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-2px)"; }}
-                onMouseLeave={e => { e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.background = C.navyDark; }}
-              >
-                Discover Our Story
-                <svg viewBox="0 0 20 20" fill="none" width="14"><path d="M4 10h12M10 4l6 6-6 6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" /></svg>
-              </button>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ══════════════════════════════════════════
-          OUR FOUNDATION
-      ══════════════════════════════════════════ */}
-      <section ref={missionRef} style={{ background: C.navyDark, padding: `${isMobile ? "72px" : "100px"} 0 ${isMobile ? "60px" : "80px"}`, position: "relative", overflow: "hidden" }}>
-
-        {/* Section header */}
-        <div className={`fade-up ${missionIn ? "in" : ""}`} style={{
-          textAlign: "center", marginBottom: isMobile ? 48 : 80,
-          position: "relative", zIndex: 1, padding: sidePad,
-        }}>
-          <div style={{ fontSize: "0.7rem", fontWeight: 700, letterSpacing: "3px", textTransform: "uppercase", color: "rgba(127,163,200,0.7)", marginBottom: 18 }}>Our Foundation</div>
-          <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 700, fontSize: isMobile ? "2rem" : "clamp(2.2rem, 4vw, 3.2rem)", color: C.white, lineHeight: 1.1, marginBottom: 16 }}>
-            The principles that drive<br /><em style={{ color: "rgba(255,255,255,0.45)", fontStyle: "italic" }}>everything we do</em>
-          </h2>
-          <div style={{ width: 40, height: 1, background: "rgba(255,255,255,0.15)", margin: "0 auto" }} />
-        </div>
-
-        {/* Alternating rows */}
-        <div style={{ maxWidth: 1280, margin: "0 auto", padding: sidePad, position: "relative", zIndex: 1 }}>
-          {foundationItems.map((item, i) => {
-            const isReverse = !isMobile && !isTablet && i % 2 !== 0;
-            return (
-              <div key={i} className={`fade-up foundation-row ${missionIn ? "in" : ""}`}
-                style={{
-                  padding: isMobile ? "48px 0" : "80px 0",
-                  borderBottom: i < foundationItems.length - 1 ? "1px solid rgba(255,255,255,0.06)" : "none",
-                  flexDirection: isReverse ? "row-reverse" : "row",
-                  transitionDelay: `${i * 0.12}s`,
-                }}>
-
-                {/* Image */}
-                <div className="foundation-img-wrap" style={{ boxShadow: "0 24px 64px rgba(0,0,0,0.45)" }}>
-                  <img src={item.img} alt={item.tag} />
-                  <div style={{
-                    position: "absolute", bottom: 24, left: 24,
-                    background: "rgba(15,24,36,0.8)", backdropFilter: "blur(10px)",
-                    border: "1px solid rgba(255,255,255,0.1)",
-                    borderRadius: 4, padding: "8px 18px",
-                  }}>
-                    <span style={{ fontSize: "0.7rem", fontWeight: 700, color: "rgba(255,255,255,0.65)", letterSpacing: "2px", textTransform: "uppercase" }}>{item.tag}</span>
-                  </div>
-                </div>
-
-                {/* Text */}
-                <div style={{ flex: 1 }}>
-                  <div style={{ fontSize: "0.7rem", fontWeight: 700, letterSpacing: "3px", textTransform: "uppercase", color: "rgba(127,163,200,0.65)", marginBottom: 20 }}>{item.tag}</div>
-                  <h3 style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 700, fontSize: isMobile ? "1.7rem" : "clamp(1.7rem, 2.8vw, 2.4rem)", color: C.white, lineHeight: 1.18, marginBottom: 22 }}>{item.heading}</h3>
-                  <div style={{ width: 36, height: 1, background: "rgba(255,255,255,0.12)", marginBottom: 22 }} />
-                  <p style={{ fontSize: "0.95rem", color: "rgba(255,255,255,0.5)", lineHeight: 1.88, marginBottom: 32 }}>{item.body}</p>
-
-                  {item.stats && (
-                    <div style={{ display: "flex", gap: 44 }}>
-                      {item.stats.map(({ v, l }) => (
-                        <div key={l}>
-                          <div style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 700, fontSize: "2.2rem", color: C.white, lineHeight: 1 }}>{v}</div>
-                          <div style={{ fontSize: "0.72rem", color: "rgba(255,255,255,0.32)", letterSpacing: "0.5px", marginTop: 6 }}>{l}</div>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-
-                  {item.quote && (
-                    <div style={{
-                      borderLeft: "2px solid rgba(255,255,255,0.1)",
-                      paddingLeft: 20,
-                      fontFamily: "'Cormorant Garamond', serif",
-                      fontSize: "1.05rem", fontStyle: "italic",
-                      color: "rgba(255,255,255,0.28)", lineHeight: 1.7,
-                    }}>
-                      "{item.quote}"
-                    </div>
-                  )}
-
-                  {item.values && (
-                    <div style={{ display: "flex", flexWrap: "wrap", gap: 10 }}>
-                      {item.values.map(v => (
-                        <div key={v} style={{
-                          background: "rgba(255,255,255,0.04)",
-                          border: "1px solid rgba(255,255,255,0.09)",
-                          borderRadius: 4, padding: "9px 20px",
-                          fontSize: "0.84rem", color: "rgba(255,255,255,0.5)",
-                          fontWeight: 500, letterSpacing: "0.4px",
-                          transition: "all 0.2s",
-                        }}>{v}</div>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      </section>
-
-      {/* ══════════════════════════════════════════
-          REGISTRATION STEPS
-      ══════════════════════════════════════════ */}
-      <section ref={stepsRef} style={{ background: C.cream, padding: sectionPad }}>
-        <div style={{ maxWidth: 1280, margin: "0 auto", padding: sidePad }}>
-          <div className={`fade-up ${stepsIn ? "in" : ""} steps-header`}>
-            <div>
-              <div style={{ fontSize: "0.7rem", fontWeight: 700, letterSpacing: "3px", textTransform: "uppercase", color: C.accent, marginBottom: 16 }}>Registration</div>
-              <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 700, fontSize: isMobile ? "2rem" : "clamp(2rem, 3.5vw, 2.8rem)", color: C.navy, lineHeight: 1.15 }}>
-                Our Easy Steps<br />For Registration
-              </h2>
-            </div>
-            <p style={{ maxWidth: 360, fontSize: "0.92rem", color: C.textMuted, lineHeight: 1.78 }}>
-              Designed with your convenience in mind — getting started takes just a few minutes on any device.
-            </p>
-          </div>
-
-          <div className="steps-grid-top">
-            {steps.slice(0, 3).map((s, i) => (
-              <div key={i} className={`fade-up d${i + 1} ${stepsIn ? "in" : ""} step-card`} style={{
-                background: C.white, borderRadius: 8, padding: isMobile ? "28px 24px" : "36px 32px",
-                border: `1px solid ${C.border}`, boxShadow: "0 2px 16px rgba(26,37,53,0.05)",
-              }}>
-                <div className="snum" style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 700, fontSize: "3rem", color: C.accent, marginBottom: 20, lineHeight: 1, opacity: 0.55 }}>{s.num}</div>
-                <h4 className="stitle" style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 700, fontSize: "1.15rem", color: C.navy, marginBottom: 10 }}>{s.title}</h4>
-                <p className="sdesc" style={{ fontSize: "0.87rem", color: C.textMuted, lineHeight: 1.72 }}>{s.desc}</p>
-              </div>
-            ))}
-          </div>
-
-          <div className="steps-grid-bottom">
-            {steps.slice(3).map((s, i) => (
-              <div key={i} className={`fade-up d${i + 4} ${stepsIn ? "in" : ""} step-card`} style={{
-                background: C.white, borderRadius: 8, padding: isMobile ? "28px 24px" : "36px 32px",
-                border: `1px solid ${C.border}`, boxShadow: "0 2px 16px rgba(26,37,53,0.05)",
-              }}>
-                <div className="snum" style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 700, fontSize: "3rem", color: C.accent, marginBottom: 20, lineHeight: 1, opacity: 0.55 }}>{s.num}</div>
-                <h4 className="stitle" style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 700, fontSize: "1.15rem", color: C.navy, marginBottom: 10 }}>{s.title}</h4>
-                <p className="sdesc" style={{ fontSize: "0.87rem", color: C.textMuted, lineHeight: 1.72 }}>{s.desc}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ══════════════════════════════════════════
-          OUR LEADERSHIP
-      ══════════════════════════════════════════ */}
-      <section ref={teamRef} style={{ background: C.white, padding: sectionPad }}>
-        <div style={{ maxWidth: 1280, margin: "0 auto", padding: sidePad }}>
-          <div className={`fade-up ${teamIn ? "in" : ""} team-header`}>
-            <div>
-              <div style={{ fontSize: "0.7rem", fontWeight: 700, letterSpacing: "3px", textTransform: "uppercase", color: C.accent, marginBottom: 16 }}>Our Leadership</div>
-              <h2 style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 700, fontSize: isMobile ? "2rem" : "clamp(2rem, 3.5vw, 2.9rem)", color: C.navy, lineHeight: 1.1 }}>
-                The minds behind<br /><em style={{ color: C.slate, fontStyle: "italic" }}>the mission</em>
-              </h2>
-            </div>
-            {!isMobile && <div style={{ width: 48, height: 1, background: C.border, marginBottom: 10 }} />}
-          </div>
-
-          <div className="team-grid">
-            {team.map((t, i) => (
-              <div key={i} className={`fade-up d${i + 1} ${teamIn ? "in" : ""} hover-up`} style={{
-                background: C.cream, borderRadius: 8, overflow: "hidden",
-                border: `1px solid ${C.border}`, boxShadow: "0 4px 24px rgba(26,37,53,0.06)",
-              }}>
-                <div style={{ height: 3, background: C.navy }} />
-                <div style={{ padding: isMobile ? "28px 24px" : "40px 36px 36px" }}>
-                  <div style={{ marginBottom: 24, display: "flex", alignItems: "center", gap: 18 }}>
-                    <div style={{
-                      width: 68, height: 68, borderRadius: "50%", flexShrink: 0,
-                      background: `linear-gradient(135deg, ${C.navy} 0%, ${C.navyLight} 100%)`,
-                      display: "flex", alignItems: "center", justifyContent: "center",
-                      fontFamily: "'Cormorant Garamond', serif", fontWeight: 700, fontSize: "1.5rem",
-                      color: C.white, border: "2px solid rgba(91,127,166,0.18)",
-                    }}>
-                      {t.name.split(" ").map(n => n[0]).join("")}
-                    </div>
-                    <div>
-                      <h3 style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 700, fontSize: "1.2rem", color: C.navy, marginBottom: 4 }}>{t.name}</h3>
-                      <div style={{ fontSize: "0.78rem", color: C.textMuted, fontWeight: 500 }}>{t.role}</div>
-                    </div>
-                  </div>
-
-                  <div style={{ height: 1, background: C.border, marginBottom: 22 }} />
-
-                  <p style={{ fontSize: "0.92rem", color: C.textMuted, lineHeight: 1.78, fontStyle: "italic", fontFamily: "'Cormorant Garamond', serif", marginBottom: 26 }}>
-                    "{t.quote}"
-                  </p>
-
-                  <div style={{
-                    display: "inline-flex", alignItems: "center", gap: 8,
-                    background: "rgba(74,96,128,0.07)", border: "1px solid rgba(74,96,128,0.15)",
-                    borderRadius: 4, padding: "6px 14px",
-                  }}>
-                    <div style={{ width: 6, height: 6, borderRadius: "50%", background: C.slate }} />
-                    <span style={{ fontSize: "0.75rem", fontWeight: 700, color: C.slate, letterSpacing: "0.4px" }}>{t.exp} Experience</span>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ══════════════════════════════════════════
-          CTA
-      ══════════════════════════════════════════ */}
-      <section ref={ctaRef} style={{ position: "relative", overflow: "hidden" }}>
-        <div style={{
-          position: "absolute", inset: 0,
-          backgroundImage: "url(https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=1600&q=80)",
-          backgroundSize: "cover", backgroundPosition: "center",
-        }} />
-        <div style={{ position: "absolute", inset: 0, background: "linear-gradient(135deg, rgba(10,17,28,0.97) 0%, rgba(22,35,52,0.94) 55%, rgba(10,17,28,0.9) 100%)" }} />
-        {!isMobile && <>
-          <div style={{ position: "absolute", top: "50%", right: 60, transform: "translateY(-50%)", width: 440, height: 440, borderRadius: "50%", border: "1px solid rgba(255,255,255,0.04)" }} />
-          <div style={{ position: "absolute", top: "50%", right: 100, transform: "translateY(-50%)", width: 300, height: 300, borderRadius: "50%", border: "1px solid rgba(255,255,255,0.03)" }} />
-        </>}
-
-        <div style={{ position: "relative", zIndex: 1, maxWidth: 1280, margin: "0 auto", padding: `${isMobile ? "72px" : "120px"} ${isMobile ? "20px" : isTablet ? "32px" : "56px"}` }}>
-          <div className="cta-inner">
-            <div className={`fade-up ${ctaIn ? "in" : ""}`} style={{ maxWidth: 600 }}>
-              <div style={{ fontSize: "0.7rem", fontWeight: 700, letterSpacing: "3px", textTransform: "uppercase", color: "rgba(255,255,255,0.35)", marginBottom: 20 }}>Start Today</div>
-              <h2 style={{
-                fontFamily: "'Cormorant Garamond', serif", fontWeight: 700,
-                fontSize: isMobile ? "2.4rem" : "clamp(2.5rem, 5vw, 4rem)",
-                color: C.white, lineHeight: 1.08, marginBottom: 24,
-              }}>
-                Ready to grow your<br />
-                wealth <em style={{ color: "rgba(255,255,255,0.45)", fontStyle: "italic" }}>with us?</em>
-              </h2>
-              <p style={{ fontSize: "1rem", color: "rgba(255,255,255,0.45)", lineHeight: 1.84, marginBottom: 52, maxWidth: 480 }}>
-                Join thousands of satisfied clients who trust Shivaji Finance to navigate their financial future.
-                Your journey to lasting wealth starts with one conversation.
-              </p>
-              <div style={{ display: "flex", gap: 14, flexWrap: "wrap", flexDirection: isMobile ? "column" : "row" }}>
-                <button style={{
-                  background: C.white, color: C.navyDark, border: "none", borderRadius: 4,
-                  padding: "16px 44px", fontFamily: "'DM Sans', sans-serif",
-                  fontWeight: 700, fontSize: "0.92rem", cursor: "pointer",
-                  letterSpacing: "0.4px", transition: "all 0.25s",
-                  boxShadow: "0 10px 32px rgba(0,0,0,0.35)",
-                  width: isMobile ? "100%" : "auto",
-                }}
-                  onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-3px)"; e.currentTarget.style.boxShadow = "0 18px 44px rgba(0,0,0,0.45)"; }}
-                  onMouseLeave={e => { e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.boxShadow = "0 10px 32px rgba(0,0,0,0.35)"; }}
-                >Book a Free Consultation</button>
-                <button style={{
-                  background: "transparent", color: C.white,
-                  border: "1px solid rgba(255,255,255,0.2)", borderRadius: 4,
-                  padding: "16px 36px", fontFamily: "'DM Sans', sans-serif",
-                  fontWeight: 500, fontSize: "0.92rem", cursor: "pointer", transition: "all 0.25s",
-                  width: isMobile ? "100%" : "auto", textAlign: "center",
-                }}
-                  onMouseEnter={e => { e.currentTarget.style.borderColor = "rgba(255,255,255,0.55)"; e.currentTarget.style.background = "rgba(255,255,255,0.06)"; }}
-                  onMouseLeave={e => { e.currentTarget.style.borderColor = "rgba(255,255,255,0.2)"; e.currentTarget.style.background = "transparent"; }}
-                >View Our Services →</button>
-              </div>
-            </div>
-
-            {/* Right — stacked stats */}
-            <div className={`fade-up d2 ${ctaIn ? "in" : ""} cta-stats`}>
-              {[
-                { v: "₹500Cr+", l: "Assets Managed" },
-                { v: "12,000+", l: "Happy Clients" },
-                { v: "98%",     l: "Client Retention" },
-                { v: "24+ Yrs", l: "In Business" },
-              ].map((s, i) => (
-                <div key={i} style={{
-                  background: i % 2 === 0 ? "rgba(255,255,255,0.04)" : "rgba(255,255,255,0.02)",
-                  border: "1px solid rgba(255,255,255,0.07)",
-                  borderRadius: isMobile
-                    ? 6
-                    : i === 0 ? "8px 8px 0 0" : i === 3 ? "0 0 8px 8px" : 0,
-                  padding: isMobile ? "18px 20px" : "24px 28px",
-                  display: "flex", alignItems: "center", justifyContent: "space-between",
-                  backdropFilter: "blur(8px)",
-                }}>
-                  <div style={{ fontFamily: "'Cormorant Garamond', serif", fontWeight: 700, fontSize: isMobile ? "1.4rem" : "1.7rem", color: C.white, lineHeight: 1 }}>{s.v}</div>
-                  <div style={{ fontSize: "0.73rem", color: "rgba(255,255,255,0.3)", fontWeight: 500, letterSpacing: "0.5px", textAlign: "right" }}>{s.l}</div>
+              <div style={{height:1,background:"rgba(255,255,255,.09)",marginBottom:16}}/>
+              {[["Processing Fee","₹0"],["Prepayment Charge","None"]].map(([k,v])=>(
+                <div key={k} style={{display:"flex",justifyContent:"space-between",marginBottom:10}}>
+                  <span style={{fontSize:13,color:"rgba(255,255,255,.38)"}}>{k}</span>
+                  <span style={{fontSize:13,fontWeight:700,color:"rgba(255,255,255,.82)"}}>{v}</span>
                 </div>
               ))}
+              <div style={{marginBottom:6}}/>
+              <button className="btn-dark shimmer-btn" style={{width:"100%",padding:"14px",fontSize:15,borderRadius:12}}>
+                Claim This Offer →
+              </button>
+              <p style={{textAlign:"center",fontSize:11,color:"rgba(255,255,255,.22)",marginTop:12}}>No CIBIL impact · check freely</p>
+            </div>
+
+            <div className="hero-badge" style={{marginTop:14,background:"rgba(255,255,255,.08)",backdropFilter:"blur(12px)",borderRadius:100,border:"1px solid rgba(255,255,255,.11)",padding:"9px 18px",display:"inline-flex",alignItems:"center",gap:8}}>
+              <span style={{width:7,height:7,borderRadius:"50%",background:"#6ee7b7",display:"inline-block",animation:"blink 1.6s infinite"}}/>
+              <span style={{fontSize:12,color:"rgba(255,255,255,.6)",fontWeight:500}}>2,345 applied today</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ══════════ STATS ══════════ */}
+      <div style={{background:D,padding:isMobile?"0 20px":`0 ${sp}`}}>
+        <div className="stats-grid" style={{maxWidth:1200,margin:"0 auto",display:"grid",gridTemplateColumns:isMobile?"1fr 1fr":isTablet?"1fr 1fr":"repeat(4,1fr)"}}>
+          {STATS.map((s,i)=>(
+            <div key={s.label} className="stats-cell"
+              style={{padding:isMobile?"32px 16px":"48px 32px",textAlign:"center",borderRight:(!isMobile&&!isTablet&&i<3)?"1px solid rgba(255,255,255,.09)":"none",borderBottom:(isMobile||isTablet)?"1px solid rgba(255,255,255,.09)":"none",transition:"background .2s",cursor:"default"}}
+              onMouseEnter={e=>e.currentTarget.style.background="rgba(255,255,255,.04)"}
+              onMouseLeave={e=>e.currentTarget.style.background="transparent"}>
+              <Icon name={s.icon} size={22} style={{color:"rgba(255,255,255,.28)",margin:"0 auto 12px"}}/>
+              <p style={{fontFamily:"'Playfair Display',serif",fontSize:isMobile?32:44,fontWeight:700,color:"white",lineHeight:1}}>{s.value}</p>
+              <p style={{fontSize:isMobile?10:11,color:"rgba(255,255,255,.38)",marginTop:8,textTransform:"uppercase",letterSpacing:".12em"}}>{s.label}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* ══════════ LOANS ══════════ */}
+      <section style={{padding:isMobile?"64px 20px":isTablet?"80px 40px":"110px 72px",background:"#cacdd2"}}>
+        <div style={{maxWidth:1200,margin:"0 auto"}}>
+          <div className="loans-header" style={{display:"grid",gridTemplateColumns:isMobile||isTablet?"1fr":"1fr 1fr",gap:isMobile?16:48,alignItems:"flex-end",marginBottom:isMobile?32:60}}>
+            <div>
+              <div style={{display:"flex",alignItems:"center",gap:12,marginBottom:16}}>
+                <div style={{height:2,width:28,background:D}}/>
+                <span style={{fontSize:11,fontWeight:700,color:"rgba(43,57,75,.45)",textTransform:"uppercase",letterSpacing:".14em"}}>Our Products</span>
+              </div>
+              <h2 style={{fontFamily:"'Playfair Display',serif",fontSize:isMobile?"clamp(32px,9vw,48px)":"clamp(38px,4vw,62px)",fontWeight:800,color:D,lineHeight:1.05}}>
+                Loans for<br/><em style={{fontStyle:"italic"}}>every need</em>
+              </h2>
+            </div>
+            <div>
+              <p style={{fontSize:15,color:"rgba(43,57,75,.48)",lineHeight:1.85,maxWidth:360,marginBottom:20}}>Carefully designed loan products — fair, transparent, and built for real people with real ambitions.</p>
+              <button className="btn-dark" style={{borderRadius:8}}>Compare All Loans →</button>
+            </div>
+          </div>
+          <div className="loans-grid" style={{display:"grid",gridTemplateColumns:isMobile?"1fr":isTablet?"1fr 1fr":"1.2fr 1fr 1fr 1fr",gap:isMobile?14:18,alignItems:"start"}}>
+            {LOANS.map((loan,idx)=>(
+              <div key={loan.title} className="loan-card" style={{paddingTop:idx===0&&!isMobile?38:28}}>
+                <div style={{width:52,height:52,background:"rgba(43,57,75,.07)",borderRadius:14,display:"flex",alignItems:"center",justifyContent:"center",marginBottom:18}}>
+                  <Icon name={loan.icon} size={22} style={{color:D}}/>
+                </div>
+                <span style={{display:"inline-block",fontSize:10,fontWeight:700,textTransform:"uppercase",letterSpacing:".08em",color:"rgba(43,57,75,.4)",background:"rgba(43,57,75,.06)",padding:"4px 10px",borderRadius:100,marginBottom:12}}>{loan.tag}</span>
+                <h3 style={{fontFamily:"'Playfair Display',serif",fontSize:21,fontWeight:700,color:D,marginBottom:8}}>{loan.title}</h3>
+                <p style={{fontSize:isMobile||isTablet?32:(idx===0?40:34),fontWeight:800,color:D,lineHeight:1,marginBottom:10}}>{loan.rate}</p>
+                <p style={{fontSize:13,color:"rgba(43,57,75,.48)",lineHeight:1.75,marginBottom:22}}>{loan.desc}</p>
+                <div style={{borderTop:"1px solid rgba(43,57,75,.08)",paddingTop:16,display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+                  <span style={{fontSize:13,fontWeight:600,color:D}}>Apply Now</span>
+                  <div style={{width:30,height:30,borderRadius:"50%",background:"rgba(43,57,75,.07)",display:"flex",alignItems:"center",justifyContent:"center"}}>
+                    <Icon name="arrow" size={13} style={{color:D}}/>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ══════════ HOW IT WORKS ══════════ */}
+      <section style={{background:D,padding:isMobile?"64px 20px":isTablet?"80px 40px":"110px 72px",position:"relative",overflow:"hidden"}}>
+        {!isMobile&&<div style={{position:"absolute",top:"50%",left:"50%",transform:"translate(-50%,-50%)",fontSize:240,fontFamily:"'Playfair Display',serif",fontWeight:800,color:"rgba(255,255,255,.022)",lineHeight:1,userSelect:"none",whiteSpace:"nowrap",pointerEvents:"none"}}>PROCESS</div>}
+        <div style={{maxWidth:1200,margin:"0 auto",position:"relative",zIndex:1}}>
+          <div style={{textAlign:"center",marginBottom:isMobile?40:72}}>
+            <div style={{display:"flex",alignItems:"center",justifyContent:"center",gap:14,marginBottom:16}}>
+              <div style={{height:1,width:32,background:"rgba(255,255,255,.2)"}}/>
+              <span style={{fontSize:11,fontWeight:700,color:"rgba(255,255,255,.38)",textTransform:"uppercase",letterSpacing:".14em"}}>Simple Process</span>
+              <div style={{height:1,width:32,background:"rgba(255,255,255,.2)"}}/>
+            </div>
+            <h2 style={{fontFamily:"'Playfair Display',serif",fontSize:isMobile?"clamp(30px,8vw,44px)":"clamp(38px,4vw,60px)",fontWeight:800,color:"white"}}>Funded in 3 easy steps</h2>
+          </div>
+          <div className="steps-grid" style={{display:"grid",gridTemplateColumns:isMobile||isTablet?"1fr":"1fr 40px 1fr 40px 1fr",alignItems:"start",gap:isMobile?16:isTablet?20:0}}>
+            {STEPS.map((step,idx)=>(
+              <>
+                <div key={step.title} className="step-card">
+                  <div style={{position:"absolute",top:18,right:22,fontFamily:"'Playfair Display',serif",fontSize:72,fontWeight:800,color:"rgba(43,57,75,.05)",lineHeight:1}}>{step.num}</div>
+                  <div style={{width:56,height:56,background:D,borderRadius:16,display:"flex",alignItems:"center",justifyContent:"center",marginBottom:20,boxShadow:"0 8px 24px rgba(43,57,75,.22)"}}>
+                    <Icon name={step.icon} size={24} style={{color:"white"}}/>
+                  </div>
+                  <h3 style={{fontFamily:"'Playfair Display',serif",fontSize:22,fontWeight:700,color:D,marginBottom:10}}>{step.title}</h3>
+                  <p style={{fontSize:14,color:"rgba(43,57,75,.5)",lineHeight:1.8}}>{step.desc}</p>
+                </div>
+                {idx<2&&!isMobile&&!isTablet&&(
+                  <div key={`sep-${idx}`} className="arrow-sep" style={{display:"flex",alignItems:"center",justifyContent:"center",paddingTop:56}}>
+                    <Icon name="arrow" size={20} style={{color:"rgba(255,255,255,.2)"}}/>
+                  </div>
+                )}
+              </>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ══════════ EMI CALCULATOR ══════════ */}
+      <section style={{background:"#cacdd2",padding:isMobile?"64px 20px":isTablet?"80px 40px":"110px 72px"}}>
+        <div style={{maxWidth:1200,margin:"0 auto"}}>
+          <div className="emi-grid" style={{display:"grid",gridTemplateColumns:isMobile||isTablet?"1fr":"1fr 1fr",borderRadius:26,overflow:"hidden",boxShadow:"0 28px 80px rgba(43,57,75,.13)",border:"1px solid rgba(43,57,75,.09)"}}>
+            <div className="emi-left" style={{background:D,padding:isMobile?"40px 24px":isTablet?"48px 40px":"60px 52px",position:"relative",overflow:"hidden",borderRadius:(isMobile||isTablet)?"26px 26px 0 0":"26px 0 0 26px"}}>
+              <div style={{position:"absolute",bottom:-70,right:-70,width:220,height:220,borderRadius:"50%",background:"rgba(255,255,255,.03)"}}/>
+              <div style={{position:"absolute",top:-50,left:-50,width:160,height:160,borderRadius:"50%",background:"rgba(255,255,255,.025)"}}/>
+              <div style={{position:"relative",zIndex:1}}>
+                <span style={{fontSize:11,fontWeight:700,color:"rgba(255,255,255,.32)",textTransform:"uppercase",letterSpacing:".14em"}}>Plan Your Loan</span>
+                <h2 style={{fontFamily:"'Playfair Display',serif",fontSize:isMobile?36:46,fontWeight:800,color:"white",marginTop:10,marginBottom:40,lineHeight:1.1}}>EMI<br/>Calculator</h2>
+                <div style={{marginBottom:36}}>
+                  <div style={{display:"flex",justifyContent:"space-between",marginBottom:14}}>
+                    <span style={{fontSize:11,color:"rgba(255,255,255,.38)",textTransform:"uppercase",letterSpacing:".1em",fontWeight:600}}>Loan Amount</span>
+                    <span style={{fontSize:isMobile?18:22,fontWeight:800,color:"white"}}>₹{fmt(amount)}</span>
+                  </div>
+                  <input type="range" min={50000} max={5000000} step={50000} value={amount} onChange={e=>setAmount(+e.target.value)} style={{background:`linear-gradient(to right,white ${apPct}%,rgba(255,255,255,.14) 0%)`}}/>
+                  <div style={{display:"flex",justifyContent:"space-between",marginTop:6}}>
+                    <span style={{fontSize:11,color:"rgba(255,255,255,.22)"}}>₹50K</span>
+                    <span style={{fontSize:11,color:"rgba(255,255,255,.22)"}}>₹50L</span>
+                  </div>
+                </div>
+                <div style={{marginBottom:36}}>
+                  <div style={{display:"flex",justifyContent:"space-between",marginBottom:14}}>
+                    <span style={{fontSize:11,color:"rgba(255,255,255,.38)",textTransform:"uppercase",letterSpacing:".1em",fontWeight:600}}>Tenure</span>
+                    <span style={{fontSize:isMobile?18:22,fontWeight:800,color:"white"}}>{tenure} years</span>
+                  </div>
+                  <input type="range" min={1} max={30} step={1} value={tenure} onChange={e=>setTenure(+e.target.value)} style={{background:`linear-gradient(to right,white ${tpPct}%,rgba(255,255,255,.14) 0%)`}}/>
+                  <div style={{display:"flex",justifyContent:"space-between",marginTop:6}}>
+                    <span style={{fontSize:11,color:"rgba(255,255,255,.22)"}}>1 yr</span>
+                    <span style={{fontSize:11,color:"rgba(255,255,255,.22)"}}>30 yrs</span>
+                  </div>
+                </div>
+                <div style={{background:"rgba(255,255,255,.07)",border:"1px solid rgba(255,255,255,.1)",borderRadius:14,padding:"16px 20px",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+                  <div>
+                    <p style={{fontSize:11,color:"rgba(255,255,255,.32)",textTransform:"uppercase",letterSpacing:".1em"}}>Interest Rate</p>
+                    <p style={{fontSize:11,color:"rgba(255,255,255,.22)",marginTop:3}}>fixed, per annum</p>
+                  </div>
+                  <p style={{fontFamily:"'Playfair Display',serif",fontSize:isMobile?32:38,fontWeight:700,color:"white"}}>8.5%</p>
+                </div>
+              </div>
+            </div>
+            <div className="emi-right" style={{background:"white",padding:isMobile?"36px 24px":isTablet?"44px 40px":"60px 52px",display:"flex",flexDirection:"column",borderRadius:(isMobile||isTablet)?"0 0 26px 26px":"0 26px 26px 0"}}>
+              <div style={{paddingBottom:28,marginBottom:28,borderBottom:"1px solid rgba(43,57,75,.08)"}}>
+                <p style={{fontSize:11,color:"rgba(43,57,75,.32)",textTransform:"uppercase",letterSpacing:".14em",fontWeight:700,marginBottom:12}}>Monthly EMI</p>
+                <p style={{fontFamily:"'Playfair Display',serif",fontSize:isMobile?"clamp(44px,10vw,64px)":"clamp(52px,5vw,76px)",fontWeight:800,color:D,lineHeight:1}}>₹{fmt(emi)}</p>
+                <p style={{fontSize:13,color:"rgba(43,57,75,.35)",marginTop:10}}>for {tenure} years · {n} instalments</p>
+                <div style={{marginTop:20,height:8,borderRadius:4,background:"rgba(43,57,75,.07)",overflow:"hidden"}}>
+                  <div style={{height:"100%",width:`${(amount/total)*100}%`,background:D,borderRadius:4,transition:"width .5s ease"}}/>
+                </div>
+                <div style={{display:"flex",justifyContent:"space-between",marginTop:7}}>
+                  <span style={{fontSize:11,color:"rgba(43,57,75,.38)"}}>Principal {Math.round(amount/total*100)}%</span>
+                  <span style={{fontSize:11,color:"rgba(43,57,75,.38)"}}>Interest {Math.round(interest/total*100)}%</span>
+                </div>
+              </div>
+              <div style={{flex:1,marginBottom:28}}>
+                {[["Principal Amount",amount,false],["Total Interest",interest,false],["Total Payment",total,true]].map(([label,val,bold])=>(
+                  <div key={label} style={{display:"flex",justifyContent:"space-between",padding:"13px 0",borderBottom:label!=="Total Payment"?"1px dashed rgba(43,57,75,.09)":"none"}}>
+                    <span style={{fontSize:14,color:"rgba(43,57,75,.48)",fontWeight:bold?600:400}}>{label}</span>
+                    <span style={{fontSize:14,fontWeight:bold?800:600,color:bold?D:"rgba(43,57,75,.72)"}}>₹{fmt(val)}</span>
+                  </div>
+                ))}
+              </div>
+              <button className="btn-dark" style={{width:"100%",padding:"15px",fontSize:15,borderRadius:10}}>Apply for this Loan →</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ══════════ TESTIMONIALS ══════════ */}
+      <section style={{background:D,padding:isMobile?"64px 20px":isTablet?"80px 40px":"110px 72px",position:"relative",overflow:"hidden"}}>
+        <div style={{position:"absolute",top:0,right:0,width:450,height:450,borderRadius:"50%",background:"rgba(255,255,255,.025)",transform:"translate(35%,-35%)"}}/>
+        <div style={{position:"absolute",bottom:0,left:0,width:300,height:300,borderRadius:"50%",background:"rgba(255,255,255,.02)",transform:"translate(-35%,35%)"}}/>
+        <div style={{maxWidth:1200,margin:"0 auto",position:"relative",zIndex:1}}>
+          <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-end",marginBottom:isMobile?40:64,flexWrap:"wrap",gap:24}}>
+            <div>
+              <div style={{display:"flex",alignItems:"center",gap:12,marginBottom:16}}>
+                <div style={{height:1,width:28,background:"rgba(255,255,255,.2)"}}/>
+                <span style={{fontSize:11,fontWeight:700,color:"rgba(255,255,255,.35)",textTransform:"uppercase",letterSpacing:".14em"}}>Testimonials</span>
+              </div>
+              <h2 style={{fontFamily:"'Playfair Display',serif",fontSize:isMobile?"clamp(30px,8vw,44px)":"clamp(36px,4vw,58px)",fontWeight:800,color:"white",lineHeight:1.05}}>
+                What our<br/><em style={{fontStyle:"italic"}}>customers say</em>
+              </h2>
+            </div>
+            <div style={{display:"flex",gap:4,alignItems:"center"}}>
+              {[...Array(5)].map((_,i)=><Icon key={i} name="star" size={18} style={{color:"rgba(255,255,255,.45)"}}/>)}
+              <span style={{fontSize:14,color:"rgba(255,255,255,.45)",marginLeft:10,fontWeight:600}}>4.9 / 5.0</span>
+            </div>
+          </div>
+          <div className="testimonials-grid" style={{display:"grid",gridTemplateColumns:isMobile?"1fr":isTablet?"1fr 1fr":"1.15fr 1fr 1fr",gap:isMobile?14:20}}>
+            {TESTIMONIALS.map((t,idx)=>(
+              <div key={t.name} className="t-card" style={{padding:idx===0&&!isMobile?40:28}}>
+                <div style={{display:"flex",gap:2,marginBottom:16}}>
+                  {[...Array(t.rating)].map((_,i)=><Icon key={i} name="star" size={13} style={{color:"#f59e0b"}}/>)}
+                </div>
+                <Icon name="quote" size={28} style={{color:"rgba(43,57,75,.1)",marginBottom:10}}/>
+                <p style={{fontSize:idx===0&&!isMobile?16:14,color:"rgba(43,57,75,.62)",lineHeight:1.9,marginBottom:24}}>{t.text}</p>
+                <div style={{display:"flex",alignItems:"center",gap:12}}>
+                  <div style={{width:44,height:44,borderRadius:"50%",background:D,display:"flex",alignItems:"center",justifyContent:"center",fontSize:13,fontWeight:700,color:"white",flexShrink:0}}>{t.initials}</div>
+                  <div>
+                    <p style={{fontWeight:700,color:D,fontSize:15}}>{t.name}</p>
+                    <p style={{fontSize:12,color:"rgba(43,57,75,.4)"}}>{t.role}</p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ══════════ FAQ ══════════ */}
+      <section style={{background:"#cacdd2",padding:isMobile?"64px 20px":isTablet?"80px 40px":"110px 72px"}}>
+        <div className="faq-grid" style={{maxWidth:1100,margin:"0 auto",display:"grid",gridTemplateColumns:isMobile||isTablet?"1fr":"1fr 1.5fr",gap:isMobile?32:isTablet?40:80,alignItems:"start"}}>
+          <div className="faq-sticky" style={{position:(!isMobile&&!isTablet)?"sticky":"static",top:100}}>
+            <div style={{display:"flex",alignItems:"center",gap:12,marginBottom:16}}>
+              <div style={{height:2,width:28,background:D}}/>
+              <span style={{fontSize:11,fontWeight:700,color:"rgba(43,57,75,.4)",textTransform:"uppercase",letterSpacing:".14em"}}>FAQ</span>
+            </div>
+            <h2 style={{fontFamily:"'Playfair Display',serif",fontSize:isMobile?"clamp(30px,8vw,44px)":"clamp(36px,4vw,54px)",fontWeight:800,color:D,lineHeight:1.1,marginBottom:16}}>
+              Frequently<br/>asked<br/><em style={{fontStyle:"italic"}}>questions</em>
+            </h2>
+            <p style={{fontSize:14,color:"rgba(43,57,75,.42)",lineHeight:1.85,maxWidth:260,marginBottom:28}}>Can't find an answer? Our team is here 24/7.</p>
+            <button className="btn-dark" style={{borderRadius:8,display:"flex",alignItems:"center",gap:8}}>
+              <Icon name="phone" size={14} style={{color:"white"}}/> Contact Support
+            </button>
+          </div>
+          <div style={{display:"flex",flexDirection:"column",gap:10}}>
+            {FAQS.map((faq,idx)=>(
+              <div key={idx} style={{background:"white",borderRadius:16,overflow:"hidden",border:`1px solid rgba(43,57,75,${activeFaq===idx?.12:.06})`,boxShadow:activeFaq===idx?"0 8px 32px rgba(43,57,75,.09)":"none",transition:"all .3s"}}>
+                <button onClick={()=>setFaq(activeFaq===idx?null:idx)} style={{width:"100%",display:"flex",justifyContent:"space-between",alignItems:"center",padding:"20px 22px",background:"none",border:"none",cursor:"pointer",textAlign:"left",fontFamily:"inherit"}}>
+                  <span style={{fontSize:isMobile?14:15,fontWeight:600,color:D,paddingRight:16}}>{faq.q}</span>
+                  <div style={{width:30,height:30,borderRadius:"50%",flexShrink:0,background:activeFaq===idx?D:"rgba(43,57,75,.07)",display:"flex",alignItems:"center",justifyContent:"center",transition:"background .25s"}}>
+                    <Icon name="plus" size={13} style={{color:activeFaq===idx?"white":D,transform:activeFaq===idx?"rotate(45deg)":"none",transition:"transform .25s"}}/>
+                  </div>
+                </button>
+                <div className={`faq-body ${activeFaq===idx?"open":""}`}>
+                  <p style={{fontSize:14,color:"rgba(43,57,75,.52)",lineHeight:1.85,padding:"0 22px 20px"}}>{faq.a}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ══════════ CTA ══════════ */}
+      <section style={{padding:isMobile?"40px 20px 60px":isTablet?"60px 40px":"80px 72px",background:"#cacdd2"}}>
+        <div style={{maxWidth:1200,margin:"0 auto"}}>
+          <div className="cta-grid" style={{background:D,borderRadius:28,padding:isMobile?"44px 24px":isTablet?"52px 40px":"76px 72px",display:"grid",gridTemplateColumns:isMobile||isTablet?"1fr":"1fr auto",gap:isMobile?28:isTablet?32:48,alignItems:"center",position:"relative",overflow:"hidden"}}>
+            <div style={{position:"absolute",right:-90,top:-90,width:340,height:340,borderRadius:"50%",border:"1px solid rgba(255,255,255,.06)"}}/>
+            <div style={{position:"absolute",right:60,bottom:-120,width:220,height:220,borderRadius:"50%",border:"1px solid rgba(255,255,255,.04)"}}/>
+            {!isMobile&&<div style={{position:"absolute",left:400,top:0,bottom:0,width:1,background:"rgba(255,255,255,.055)"}}/>}
+            <div style={{position:"relative",zIndex:1}}>
+              <span style={{fontSize:11,fontWeight:700,color:"rgba(255,255,255,.36)",textTransform:"uppercase",letterSpacing:".14em"}}>Get Started Today</span>
+              <h2 style={{fontFamily:"'Playfair Display',serif",fontSize:isMobile?"clamp(34px,9vw,48px)":"clamp(38px,4vw,64px)",fontWeight:800,color:"white",marginTop:10,lineHeight:1.05}}>
+                Ready to get<br/><em style={{fontStyle:"italic",color:"rgba(255,255,255,.55)"}}>started?</em>
+              </h2>
+            </div>
+            <div style={{position:"relative",zIndex:1}}>
+              <p style={{fontSize:15,color:"rgba(255,255,255,.42)",lineHeight:1.85,maxWidth:300,marginBottom:24}}>Join thousands of happy customers who trusted ClearFund for their financial journey.</p>
+              <div className="cta-buttons" style={{display:"flex",gap:12,flexWrap:"wrap"}}>
+                <button className="btn-outline">Learn More</button>
+                <button style={{background:"white",color:D,border:"none",borderRadius:7,padding:"13px 32px",fontSize:15,fontWeight:700,cursor:"pointer",fontFamily:"inherit",transition:"all .2s",whiteSpace:"nowrap"}}
+                  onMouseEnter={e=>{e.currentTarget.style.transform="translateY(-2px)";e.currentTarget.style.boxShadow="0 10px 32px rgba(0,0,0,.22)"}}
+                  onMouseLeave={e=>{e.currentTarget.style.transform="none";e.currentTarget.style.boxShadow="none"}}>
+                  Apply Now — Free
+                </button>
+              </div>
             </div>
           </div>
         </div>

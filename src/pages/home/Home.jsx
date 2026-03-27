@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 
-// ── Responsive hook ──────────────────────────────────────────────────────────
 function useBreakpoint() {
   const [w, setW] = useState(typeof window !== "undefined" ? window.innerWidth : 1200);
   useEffect(() => {
@@ -9,9 +8,10 @@ function useBreakpoint() {
     return () => window.removeEventListener("resize", fn);
   }, []);
   return { isMobile: w < 640, isTablet: w < 1024, isSmall: w < 480, width: w };
+
+  
 }
 
-// ── Icon component (unchanged) ───────────────────────────────────────────────
 const Icon = ({ name, size = 20, style = {} }) => {
   const p = { width: size, height: size, viewBox: "0 0 24 24", fill: "none", stroke: "currentColor", strokeWidth: "1.8", strokeLinecap: "round", strokeLinejoin: "round", style: { display: "block", ...style } };
   const icons = {
@@ -75,11 +75,9 @@ export default function ClearFund() {
   const { isMobile, isTablet, isSmall } = useBreakpoint();
   const [amount, setAmount] = useState(1000000);
   const [tenure, setTenure] = useState(10);
-  const [activeFaq, setFaq]  = useState(null);
+  const [activeFaq, setFaq] = useState(null);
 
-  // Padding helper
   const sp = isMobile ? "20px" : isTablet ? "40px" : "72px";
-
   const r = 8.5 / 1200, n = tenure * 12;
   const emi      = Math.round((amount * r * Math.pow(1+r,n)) / (Math.pow(1+r,n)-1));
   const total    = emi * n;
@@ -88,11 +86,16 @@ export default function ClearFund() {
   const apPct    = ((amount - 50000) / 4950000) * 100;
   const tpPct    = ((tenure - 1) / 29) * 100;
 
+
+
+useEffect(() => {
+  window.scrollTo(0, 0);
+}, []);
+
   return (
     <div style={{ fontFamily:"'Sora',sans-serif", background:"#cacdd2", color:D, overflowX:"hidden" }}>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;0,800;1,600;1,700&display=swap');
-
         *,*::before,*::after{box-sizing:border-box}
 
         @keyframes fadeUp{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:translateY(0)}}
@@ -131,10 +134,76 @@ export default function ClearFund() {
         .shimmer-btn{position:relative;overflow:hidden}
         .shimmer-btn::after{content:'';position:absolute;top:0;left:0;width:50%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.08),transparent);animation:shimX 3.5s ease infinite}
 
-        /* ── Responsive overrides ── */
+        /* ════ HERO — pure CSS responsive ════ */
+
+        /* The <section> itself — bg image fills it */
+        .hero-section {
+          position: relative;
+          overflow: hidden;
+          width: 100%;
+        }
+        .hero-bg {
+          position: absolute;
+          inset: 0;
+          width: 100%;
+          height: 100%;
+          object-fit: cover;
+          object-position: center 60%;
+          display: block;
+        }
+        /* Overlay — slightly darker on mobile for readability */
+        .hero-overlay {
+          position: absolute;
+          inset: 0;
+          background: linear-gradient(135deg,rgba(0,0,0,.50) 0%,rgba(0,0,0,.28) 55%,rgba(0,0,0,.48) 100%);
+          z-index: 1;
+        }
+
+        /* Content wrapper */
+        .hero-inner {
+          position: relative;
+          z-index: 2;
+          width: 100%;
+          max-width: 1380px;
+          margin: 0 auto;
+        }
+
+        /* ── Desktop ≥1024px: side-by-side, full vh ── */
+        @media(min-width:1024px){
+          .hero-section  { min-height: 100vh; }
+          .hero-inner    { display:flex; flex-direction:row; align-items:center; min-height:100vh; padding:0 72px; gap:72px; }
+          .hero-left     { flex:1; min-width:0; }
+          .hero-right    { flex-shrink:0; width:375px; animation:floatY 5s ease-in-out 1.2s infinite; }
+          .hero-badge    { float:right; }
+        }
+
+        /* ── Tablet 640–1023px: stacked, auto height ── */
+        @media(min-width:640px) and (max-width:1023px){
+          .hero-section  { min-height: auto; }
+          .hero-inner    { display:flex; flex-direction:column; align-items:flex-start; padding:110px 40px 64px; gap:44px; }
+          .hero-left     { width:100%; }
+          .hero-right    { width:100%; max-width:460px; animation:none!important; }
+          .hero-badge    { float:right; }
+          .hero-overlay  { background:linear-gradient(to bottom,rgba(0,0,0,.52) 0%,rgba(0,0,0,.32) 50%,rgba(0,0,0,.55) 100%); }
+        }
+
+        /* ── Mobile <640px: stacked, tighter, auto height ── */
         @media(max-width:639px){
-          .hero-content{flex-direction:column!important;padding:80px 20px 40px!important;align-items:flex-start!important;gap:32px!important}
-          .hero-float{width:100%!important;animation:none!important;float:none!important}
+          .hero-section  { min-height: auto; }
+          .hero-inner    { display:flex; flex-direction:column; align-items:flex-start; padding:88px 20px 44px; gap:32px; }
+          .hero-left     { width:100%; }
+          .hero-right    { width:100%; animation:none!important; }
+          .hero-badge    { float:none; display:inline-flex; margin-top:10px; }
+          .hero-overlay  { background:linear-gradient(to bottom,rgba(0,0,0,.58) 0%,rgba(0,0,0,.36) 45%,rgba(0,0,0,.64) 100%); }
+        }
+
+        /* ── Extra-small <380px ── */
+        @media(max-width:379px){
+          .hero-inner { padding:76px 16px 36px; gap:24px; }
+        }
+
+        /* ════ Rest of page responsive ════ */
+        @media(max-width:639px){
           .stats-grid{grid-template-columns:1fr 1fr!important}
           .stats-cell{border-right:none!important;border-bottom:1px solid rgba(255,255,255,.09)!important;padding:28px 16px!important}
           .loans-header{grid-template-columns:1fr!important;gap:16px!important;margin-bottom:32px!important}
@@ -153,8 +222,6 @@ export default function ClearFund() {
           .cta-buttons{flex-wrap:wrap!important}
         }
         @media(min-width:640px) and (max-width:1023px){
-          .hero-content{flex-direction:column!important;padding:100px 40px 60px!important;align-items:flex-start!important;gap:40px!important}
-          .hero-float{width:100%!important;max-width:420px!important;animation:none!important}
           .stats-grid{grid-template-columns:repeat(2,1fr)!important}
           .stats-cell{border-right:none!important;border-bottom:1px solid rgba(255,255,255,.09)!important}
           .loans-header{grid-template-columns:1fr!important;gap:20px!important}
@@ -172,86 +239,66 @@ export default function ClearFund() {
       `}</style>
 
       {/* ══════════ HERO ══════════ */}
-      <section style={{position:"relative", minHeight: isMobile ? "auto" : "100vh", overflow:"hidden"}}>
-        <img
-          src="/7.png"
-          alt="Dream home"
-          style={{position:"absolute",inset:0,width:"100%",height:"100%",objectFit:"cover",objectPosition:"center 60%"}}
-        />
-        {/* Overlay for better readability on mobile */}
+      <section className="hero-section">
+        <img src="/7.png" alt="Dream home" className="hero-bg" />
+        <div className="hero-overlay" />
 
-        <div
-          className="hero-content"
-          style={{
-            position:"relative",zIndex:2,
-            display:"flex",alignItems: isMobile ? "flex-start" : "center",
-            padding: isMobile ? "100px 20px 40px" : isTablet ? "120px 40px 60px" : "0 72px",
-            gap: isMobile ? 32 : 72,
-            maxWidth:1380, margin:"0 auto",
-            minHeight: isMobile ? "auto" : "100vh",
-            flexDirection: isMobile ? "column" : isTablet ? "column" : "row",
-          }}
-        >
-          {/* Left headline */}
-          <div style={{flex:1, minWidth:0}}>
+        <div className="hero-inner">
+          {/* Left: headline */}
+          <div className="hero-left">
             <div className="fu" style={{display:"inline-flex",alignItems:"center",gap:8,background:"rgba(255,255,255,.09)",backdropFilter:"blur(12px)",border:"1px solid rgba(255,255,255,.13)",borderRadius:100,padding:"6px 16px",marginBottom:24}}>
               <span style={{width:6,height:6,borderRadius:"50%",background:"#6ee7b7",display:"inline-block",animation:"blink 2s infinite"}}/>
-              <span style={{fontSize: isMobile ? 10 : 11,color:"rgba(255,255,255,.75)",fontWeight:600,letterSpacing:".1em",textTransform:"uppercase"}}>Trusted by 1,00,000+ Indians</span>
+              <span style={{fontSize:isSmall?10:11,color:"rgba(255,255,255,.75)",fontWeight:600,letterSpacing:".1em",textTransform:"uppercase"}}>Trusted by 1,00,000+ Indians</span>
             </div>
 
-            <h1 className="fu d1" style={{fontFamily:"'Playfair Display',serif",fontSize: isMobile ? "clamp(44px,12vw,64px)" : isTablet ? "clamp(48px,7vw,72px)" : "clamp(54px,6.5vw,92px)",lineHeight:1.0,fontWeight:800,color:"white",marginBottom:20}}>
+            <h1 className="fu d1" style={{
+              fontFamily:"'Playfair Display',serif",
+              fontSize:isSmall?"clamp(36px,10vw,50px)":isMobile?"clamp(44px,12vw,64px)":isTablet?"clamp(48px,7vw,72px)":"clamp(54px,6.5vw,92px)",
+              lineHeight:1.0,fontWeight:800,color:"white",marginBottom:20
+            }}>
               Smart Loans<br/>for Your<br/>
               <em style={{fontStyle:"italic",color:"rgba(255,255,255,.55)"}}>Dreams.</em>
             </h1>
 
-            <p className="fu d2" style={{fontSize: isMobile ? 14 : 16,color:"rgba(255,255,255,.5)",lineHeight:1.9,maxWidth:420,marginBottom:32}}>
+            <p className="fu d2" style={{fontSize:isMobile?14:16,color:"rgba(255,255,255,.5)",lineHeight:1.9,maxWidth:420,marginBottom:32}}>
               Get instant approval, competitive rates, and zero hidden charges. Your financial freedom starts here.
             </p>
 
             <div className="fu d3 hero-buttons" style={{display:"flex",gap:12,marginBottom:36,flexWrap:"wrap"}}>
-              <button className="btn-dark" style={{padding: isMobile ? "13px 28px" : "14px 36px",fontSize: isMobile ? 14 : 15,borderRadius:8}}>
+              <button className="btn-dark" style={{padding:isMobile?"13px 28px":"14px 36px",fontSize:isMobile?14:15,borderRadius:8}}>
                 Check Eligibility →
               </button>
-              <button className="btn-outline" style={{padding: isMobile ? "12px 20px" : "14px 24px",fontSize: isMobile ? 14 : 15,borderRadius:8,display:"flex",alignItems:"center",gap:8}}>
+              <button className="btn-outline" style={{padding:isMobile?"12px 20px":"14px 24px",fontSize:isMobile?14:15,borderRadius:8,display:"flex",alignItems:"center",gap:8}}>
                 <Icon name="phone" size={15} style={{color:"white"}}/> Talk to Expert
               </button>
             </div>
 
-            <div className="fu d4 hero-badges" style={{display:"flex",gap: isMobile ? 12 : 24,flexWrap:"wrap"}}>
+            <div className="fu d4 hero-badges" style={{display:"flex",gap:isMobile?12:24,flexWrap:"wrap"}}>
               {["RBI Regulated","256-bit SSL","Zero Hidden Fees"].map(b=>(
                 <div key={b} style={{display:"flex",alignItems:"center",gap:7}}>
                   <div style={{width:18,height:18,borderRadius:"50%",background:"rgba(255,255,255,.1)",border:"1px solid rgba(255,255,255,.18)",display:"flex",alignItems:"center",justifyContent:"center"}}>
                     <Icon name="check" size={9} style={{color:"rgba(255,255,255,.8)"}}/>
                   </div>
-                  <span style={{fontSize: isMobile ? 11 : 12,color:"rgba(255,255,255,.4)",fontWeight:500}}>{b}</span>
+                  <span style={{fontSize:isMobile?11:12,color:"rgba(255,255,255,.4)",fontWeight:500}}>{b}</span>
                 </div>
               ))}
             </div>
           </div>
 
-          {/* Right float card */}
-          <div
-            className="hero-float fu d3"
-            style={{
-              width: isMobile ? "100%" : isTablet ? "100%" : 375,
-              maxWidth: isTablet && !isMobile ? 420 : "none",
-              flexShrink:0,
-              animation: (!isMobile && !isTablet) ? "floatY 5s ease-in-out infinite" : "none",
-              animationDelay:"1.2s",
-            }}
-          >
+          {/* Right: float card */}
+          <div className="hero-right fu d3">
             <div style={{
               background:"rgba(255,255,255,.065)",backdropFilter:"blur(28px)",
               border:"1px solid rgba(255,255,255,.13)",borderRadius:24,
-              padding: isMobile ? 24 : 34,
+              padding:isMobile?24:34,
               boxShadow:"0 40px 100px rgba(0,0,0,.45)",
             }}>
               <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:6}}>
                 <div>
                   <p style={{fontSize:10,color:"rgba(255,255,255,.35)",textTransform:"uppercase",letterSpacing:".12em",marginBottom:8}}>Pre-approved Offer</p>
-                  <p style={{fontFamily:"'Playfair Display',serif",fontSize: isMobile ? 44 : 54,fontWeight:700,color:"white",lineHeight:1}}>₹15L</p>
+                  <p style={{fontFamily:"'Playfair Display',serif",fontSize:isMobile?44:54,fontWeight:700,color:"white",lineHeight:1}}>₹15L</p>
                 </div>
-                <div style={{background:"white",width:48,height:48,borderRadius:14,display:"flex",alignItems:"center",justifyContent:"center"}}>
+                <div style={{background:"white",width:48,height:48,borderRadius:14,display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>
                   <Icon name="zap" size={22} style={{color:D}}/>
                 </div>
               </div>
@@ -280,95 +327,57 @@ export default function ClearFund() {
               <p style={{textAlign:"center",fontSize:11,color:"rgba(255,255,255,.22)",marginTop:12}}>No CIBIL impact · check freely</p>
             </div>
 
-            <div style={{marginTop:14,background:"rgba(255,255,255,.08)",backdropFilter:"blur(12px)",borderRadius:100,border:"1px solid rgba(255,255,255,.11)",padding:"9px 18px",display:"inline-flex",alignItems:"center",gap:8,float:"right"}}>
+            <div className="hero-badge" style={{marginTop:14,background:"rgba(255,255,255,.08)",backdropFilter:"blur(12px)",borderRadius:100,border:"1px solid rgba(255,255,255,.11)",padding:"9px 18px",display:"inline-flex",alignItems:"center",gap:8}}>
               <span style={{width:7,height:7,borderRadius:"50%",background:"#6ee7b7",display:"inline-block",animation:"blink 1.6s infinite"}}/>
               <span style={{fontSize:12,color:"rgba(255,255,255,.6)",fontWeight:500}}>2,345 applied today</span>
             </div>
           </div>
         </div>
-
-     
       </section>
 
       {/* ══════════ STATS ══════════ */}
-      <div style={{background:D, padding: isMobile ? "0 20px" : `0 ${sp}`}}>
-        <div
-          className="stats-grid"
-          style={{
-            maxWidth:1200, margin:"0 auto",
-            display:"grid",
-            gridTemplateColumns: isMobile ? "1fr 1fr" : isTablet ? "1fr 1fr" : "repeat(4,1fr)",
-          }}
-        >
+      <div style={{background:D,padding:isMobile?"0 20px":`0 ${sp}`}}>
+        <div className="stats-grid" style={{maxWidth:1200,margin:"0 auto",display:"grid",gridTemplateColumns:isMobile?"1fr 1fr":isTablet?"1fr 1fr":"repeat(4,1fr)"}}>
           {STATS.map((s,i)=>(
-            <div
-              key={s.label}
-              className="stats-cell"
-              style={{
-                padding: isMobile ? "32px 16px" : "48px 32px",
-                textAlign:"center",
-                borderRight: (!isMobile && !isTablet && i<3) ? "1px solid rgba(255,255,255,.09)" : "none",
-                borderBottom: (isMobile || isTablet) ? "1px solid rgba(255,255,255,.09)" : "none",
-                transition:"background .2s",cursor:"default",
-              }}
+            <div key={s.label} className="stats-cell"
+              style={{padding:isMobile?"32px 16px":"48px 32px",textAlign:"center",borderRight:(!isMobile&&!isTablet&&i<3)?"1px solid rgba(255,255,255,.09)":"none",borderBottom:(isMobile||isTablet)?"1px solid rgba(255,255,255,.09)":"none",transition:"background .2s",cursor:"default"}}
               onMouseEnter={e=>e.currentTarget.style.background="rgba(255,255,255,.04)"}
-              onMouseLeave={e=>e.currentTarget.style.background="transparent"}
-            >
+              onMouseLeave={e=>e.currentTarget.style.background="transparent"}>
               <Icon name={s.icon} size={22} style={{color:"rgba(255,255,255,.28)",margin:"0 auto 12px"}}/>
-              <p style={{fontFamily:"'Playfair Display',serif",fontSize: isMobile ? 32 : 44,fontWeight:700,color:"white",lineHeight:1}}>{s.value}</p>
-              <p style={{fontSize: isMobile ? 10 : 11,color:"rgba(255,255,255,.38)",marginTop:8,textTransform:"uppercase",letterSpacing:".12em"}}>{s.label}</p>
+              <p style={{fontFamily:"'Playfair Display',serif",fontSize:isMobile?32:44,fontWeight:700,color:"white",lineHeight:1}}>{s.value}</p>
+              <p style={{fontSize:isMobile?10:11,color:"rgba(255,255,255,.38)",marginTop:8,textTransform:"uppercase",letterSpacing:".12em"}}>{s.label}</p>
             </div>
           ))}
         </div>
       </div>
 
       {/* ══════════ LOANS ══════════ */}
-      <section style={{padding: isMobile ? "64px 20px" : isTablet ? "80px 40px" : "110px 72px",background:"#cacdd2"}}>
+      <section style={{padding:isMobile?"64px 20px":isTablet?"80px 40px":"110px 72px",background:"#cacdd2"}}>
         <div style={{maxWidth:1200,margin:"0 auto"}}>
-          <div
-            className="loans-header"
-            style={{
-              display:"grid",
-              gridTemplateColumns: isMobile || isTablet ? "1fr" : "1fr 1fr",
-              gap: isMobile ? 16 : 48,
-              alignItems:"flex-end",
-              marginBottom: isMobile ? 32 : 60,
-            }}
-          >
+          <div className="loans-header" style={{display:"grid",gridTemplateColumns:isMobile||isTablet?"1fr":"1fr 1fr",gap:isMobile?16:48,alignItems:"flex-end",marginBottom:isMobile?32:60}}>
             <div>
               <div style={{display:"flex",alignItems:"center",gap:12,marginBottom:16}}>
                 <div style={{height:2,width:28,background:D}}/>
                 <span style={{fontSize:11,fontWeight:700,color:"rgba(43,57,75,.45)",textTransform:"uppercase",letterSpacing:".14em"}}>Our Products</span>
               </div>
-              <h2 style={{fontFamily:"'Playfair Display',serif",fontSize: isMobile ? "clamp(32px,9vw,48px)" : "clamp(38px,4vw,62px)",fontWeight:800,color:D,lineHeight:1.05}}>
+              <h2 style={{fontFamily:"'Playfair Display',serif",fontSize:isMobile?"clamp(32px,9vw,48px)":"clamp(38px,4vw,62px)",fontWeight:800,color:D,lineHeight:1.05}}>
                 Loans for<br/><em style={{fontStyle:"italic"}}>every need</em>
               </h2>
             </div>
             <div>
-              <p style={{fontSize:15,color:"rgba(43,57,75,.48)",lineHeight:1.85,maxWidth:360,marginBottom:20}}>
-                Carefully designed loan products — fair, transparent, and built for real people with real ambitions.
-              </p>
+              <p style={{fontSize:15,color:"rgba(43,57,75,.48)",lineHeight:1.85,maxWidth:360,marginBottom:20}}>Carefully designed loan products — fair, transparent, and built for real people with real ambitions.</p>
               <button className="btn-dark" style={{borderRadius:8}}>Compare All Loans →</button>
             </div>
           </div>
-
-          <div
-            className="loans-grid"
-            style={{
-              display:"grid",
-              gridTemplateColumns: isMobile ? "1fr" : isTablet ? "1fr 1fr" : "1.2fr 1fr 1fr 1fr",
-              gap: isMobile ? 14 : 18,
-              alignItems:"start",
-            }}
-          >
+          <div className="loans-grid" style={{display:"grid",gridTemplateColumns:isMobile?"1fr":isTablet?"1fr 1fr":"1.2fr 1fr 1fr 1fr",gap:isMobile?14:18,alignItems:"start"}}>
             {LOANS.map((loan,idx)=>(
-              <div key={loan.title} className="loan-card" style={{paddingTop: idx===0 && !isMobile ? 38 : 28}}>
+              <div key={loan.title} className="loan-card" style={{paddingTop:idx===0&&!isMobile?38:28}}>
                 <div style={{width:52,height:52,background:"rgba(43,57,75,.07)",borderRadius:14,display:"flex",alignItems:"center",justifyContent:"center",marginBottom:18}}>
                   <Icon name={loan.icon} size={22} style={{color:D}}/>
                 </div>
                 <span style={{display:"inline-block",fontSize:10,fontWeight:700,textTransform:"uppercase",letterSpacing:".08em",color:"rgba(43,57,75,.4)",background:"rgba(43,57,75,.06)",padding:"4px 10px",borderRadius:100,marginBottom:12}}>{loan.tag}</span>
                 <h3 style={{fontFamily:"'Playfair Display',serif",fontSize:21,fontWeight:700,color:D,marginBottom:8}}>{loan.title}</h3>
-                <p style={{fontSize: isMobile || isTablet ? 32 : (idx===0?40:34),fontWeight:800,color:D,lineHeight:1,marginBottom:10}}>{loan.rate}</p>
+                <p style={{fontSize:isMobile||isTablet?32:(idx===0?40:34),fontWeight:800,color:D,lineHeight:1,marginBottom:10}}>{loan.rate}</p>
                 <p style={{fontSize:13,color:"rgba(43,57,75,.48)",lineHeight:1.75,marginBottom:22}}>{loan.desc}</p>
                 <div style={{borderTop:"1px solid rgba(43,57,75,.08)",paddingTop:16,display:"flex",justifyContent:"space-between",alignItems:"center"}}>
                   <span style={{fontSize:13,fontWeight:600,color:D}}>Apply Now</span>
@@ -383,30 +392,18 @@ export default function ClearFund() {
       </section>
 
       {/* ══════════ HOW IT WORKS ══════════ */}
-      <section style={{background:D, padding: isMobile ? "64px 20px" : isTablet ? "80px 40px" : "110px 72px", position:"relative",overflow:"hidden"}}>
-        {!isMobile && (
-          <div style={{position:"absolute",top:"50%",left:"50%",transform:"translate(-50%,-50%)",fontSize:240,fontFamily:"'Playfair Display',serif",fontWeight:800,color:"rgba(255,255,255,.022)",lineHeight:1,userSelect:"none",whiteSpace:"nowrap",pointerEvents:"none"}}>PROCESS</div>
-        )}
-
+      <section style={{background:D,padding:isMobile?"64px 20px":isTablet?"80px 40px":"110px 72px",position:"relative",overflow:"hidden"}}>
+        {!isMobile&&<div style={{position:"absolute",top:"50%",left:"50%",transform:"translate(-50%,-50%)",fontSize:240,fontFamily:"'Playfair Display',serif",fontWeight:800,color:"rgba(255,255,255,.022)",lineHeight:1,userSelect:"none",whiteSpace:"nowrap",pointerEvents:"none"}}>PROCESS</div>}
         <div style={{maxWidth:1200,margin:"0 auto",position:"relative",zIndex:1}}>
-          <div style={{textAlign:"center",marginBottom: isMobile ? 40 : 72}}>
+          <div style={{textAlign:"center",marginBottom:isMobile?40:72}}>
             <div style={{display:"flex",alignItems:"center",justifyContent:"center",gap:14,marginBottom:16}}>
               <div style={{height:1,width:32,background:"rgba(255,255,255,.2)"}}/>
               <span style={{fontSize:11,fontWeight:700,color:"rgba(255,255,255,.38)",textTransform:"uppercase",letterSpacing:".14em"}}>Simple Process</span>
               <div style={{height:1,width:32,background:"rgba(255,255,255,.2)"}}/>
             </div>
-            <h2 style={{fontFamily:"'Playfair Display',serif",fontSize: isMobile ? "clamp(30px,8vw,44px)" : "clamp(38px,4vw,60px)",fontWeight:800,color:"white"}}>Funded in 3 easy steps</h2>
+            <h2 style={{fontFamily:"'Playfair Display',serif",fontSize:isMobile?"clamp(30px,8vw,44px)":"clamp(38px,4vw,60px)",fontWeight:800,color:"white"}}>Funded in 3 easy steps</h2>
           </div>
-
-          <div
-            className="steps-grid"
-            style={{
-              display:"grid",
-              gridTemplateColumns: isMobile || isTablet ? "1fr" : "1fr 40px 1fr 40px 1fr",
-              alignItems:"start",
-              gap: isMobile ? 16 : isTablet ? 20 : 0,
-            }}
-          >
+          <div className="steps-grid" style={{display:"grid",gridTemplateColumns:isMobile||isTablet?"1fr":"1fr 40px 1fr 40px 1fr",alignItems:"start",gap:isMobile?16:isTablet?20:0}}>
             {STEPS.map((step,idx)=>(
               <>
                 <div key={step.title} className="step-card">
@@ -417,7 +414,7 @@ export default function ClearFund() {
                   <h3 style={{fontFamily:"'Playfair Display',serif",fontSize:22,fontWeight:700,color:D,marginBottom:10}}>{step.title}</h3>
                   <p style={{fontSize:14,color:"rgba(43,57,75,.5)",lineHeight:1.8}}>{step.desc}</p>
                 </div>
-                {idx<2 && !isMobile && !isTablet && (
+                {idx<2&&!isMobile&&!isTablet&&(
                   <div key={`sep-${idx}`} className="arrow-sep" style={{display:"flex",alignItems:"center",justifyContent:"center",paddingTop:56}}>
                     <Icon name="arrow" size={20} style={{color:"rgba(255,255,255,.2)"}}/>
                   </div>
@@ -429,83 +426,50 @@ export default function ClearFund() {
       </section>
 
       {/* ══════════ EMI CALCULATOR ══════════ */}
-      <section style={{background:"#cacdd2", padding: isMobile ? "64px 20px" : isTablet ? "80px 40px" : "110px 72px"}}>
+      <section style={{background:"#cacdd2",padding:isMobile?"64px 20px":isTablet?"80px 40px":"110px 72px"}}>
         <div style={{maxWidth:1200,margin:"0 auto"}}>
-          <div
-            className="emi-grid"
-            style={{
-              display:"grid",
-              gridTemplateColumns: isMobile || isTablet ? "1fr" : "1fr 1fr",
-              borderRadius:26,overflow:"hidden",
-              boxShadow:"0 28px 80px rgba(43,57,75,.13)",
-              border:"1px solid rgba(43,57,75,.09)",
-            }}
-          >
-            {/* Left dark */}
-            <div
-              className="emi-left"
-              style={{
-                background:D,
-                padding: isMobile ? "40px 24px" : isTablet ? "48px 40px" : "60px 52px",
-                position:"relative",overflow:"hidden",
-                borderRadius: (isMobile || isTablet) ? "26px 26px 0 0" : "26px 0 0 26px",
-              }}
-            >
+          <div className="emi-grid" style={{display:"grid",gridTemplateColumns:isMobile||isTablet?"1fr":"1fr 1fr",borderRadius:26,overflow:"hidden",boxShadow:"0 28px 80px rgba(43,57,75,.13)",border:"1px solid rgba(43,57,75,.09)"}}>
+            <div className="emi-left" style={{background:D,padding:isMobile?"40px 24px":isTablet?"48px 40px":"60px 52px",position:"relative",overflow:"hidden",borderRadius:(isMobile||isTablet)?"26px 26px 0 0":"26px 0 0 26px"}}>
               <div style={{position:"absolute",bottom:-70,right:-70,width:220,height:220,borderRadius:"50%",background:"rgba(255,255,255,.03)"}}/>
               <div style={{position:"absolute",top:-50,left:-50,width:160,height:160,borderRadius:"50%",background:"rgba(255,255,255,.025)"}}/>
               <div style={{position:"relative",zIndex:1}}>
                 <span style={{fontSize:11,fontWeight:700,color:"rgba(255,255,255,.32)",textTransform:"uppercase",letterSpacing:".14em"}}>Plan Your Loan</span>
-                <h2 style={{fontFamily:"'Playfair Display',serif",fontSize: isMobile ? 36 : 46,fontWeight:800,color:"white",marginTop:10,marginBottom:40,lineHeight:1.1}}>EMI<br/>Calculator</h2>
-
+                <h2 style={{fontFamily:"'Playfair Display',serif",fontSize:isMobile?36:46,fontWeight:800,color:"white",marginTop:10,marginBottom:40,lineHeight:1.1}}>EMI<br/>Calculator</h2>
                 <div style={{marginBottom:36}}>
                   <div style={{display:"flex",justifyContent:"space-between",marginBottom:14}}>
                     <span style={{fontSize:11,color:"rgba(255,255,255,.38)",textTransform:"uppercase",letterSpacing:".1em",fontWeight:600}}>Loan Amount</span>
-                    <span style={{fontSize: isMobile ? 18 : 22,fontWeight:800,color:"white"}}>₹{fmt(amount)}</span>
+                    <span style={{fontSize:isMobile?18:22,fontWeight:800,color:"white"}}>₹{fmt(amount)}</span>
                   </div>
-                  <input type="range" min={50000} max={5000000} step={50000} value={amount} onChange={e=>setAmount(+e.target.value)}
-                    style={{background:`linear-gradient(to right,white ${apPct}%,rgba(255,255,255,.14) 0%)`}}/>
+                  <input type="range" min={50000} max={5000000} step={50000} value={amount} onChange={e=>setAmount(+e.target.value)} style={{background:`linear-gradient(to right,white ${apPct}%,rgba(255,255,255,.14) 0%)`}}/>
                   <div style={{display:"flex",justifyContent:"space-between",marginTop:6}}>
                     <span style={{fontSize:11,color:"rgba(255,255,255,.22)"}}>₹50K</span>
                     <span style={{fontSize:11,color:"rgba(255,255,255,.22)"}}>₹50L</span>
                   </div>
                 </div>
-
                 <div style={{marginBottom:36}}>
                   <div style={{display:"flex",justifyContent:"space-between",marginBottom:14}}>
                     <span style={{fontSize:11,color:"rgba(255,255,255,.38)",textTransform:"uppercase",letterSpacing:".1em",fontWeight:600}}>Tenure</span>
-                    <span style={{fontSize: isMobile ? 18 : 22,fontWeight:800,color:"white"}}>{tenure} years</span>
+                    <span style={{fontSize:isMobile?18:22,fontWeight:800,color:"white"}}>{tenure} years</span>
                   </div>
-                  <input type="range" min={1} max={30} step={1} value={tenure} onChange={e=>setTenure(+e.target.value)}
-                    style={{background:`linear-gradient(to right,white ${tpPct}%,rgba(255,255,255,.14) 0%)`}}/>
+                  <input type="range" min={1} max={30} step={1} value={tenure} onChange={e=>setTenure(+e.target.value)} style={{background:`linear-gradient(to right,white ${tpPct}%,rgba(255,255,255,.14) 0%)`}}/>
                   <div style={{display:"flex",justifyContent:"space-between",marginTop:6}}>
                     <span style={{fontSize:11,color:"rgba(255,255,255,.22)"}}>1 yr</span>
                     <span style={{fontSize:11,color:"rgba(255,255,255,.22)"}}>30 yrs</span>
                   </div>
                 </div>
-
                 <div style={{background:"rgba(255,255,255,.07)",border:"1px solid rgba(255,255,255,.1)",borderRadius:14,padding:"16px 20px",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
                   <div>
                     <p style={{fontSize:11,color:"rgba(255,255,255,.32)",textTransform:"uppercase",letterSpacing:".1em"}}>Interest Rate</p>
                     <p style={{fontSize:11,color:"rgba(255,255,255,.22)",marginTop:3}}>fixed, per annum</p>
                   </div>
-                  <p style={{fontFamily:"'Playfair Display',serif",fontSize: isMobile ? 32 : 38,fontWeight:700,color:"white"}}>8.5%</p>
+                  <p style={{fontFamily:"'Playfair Display',serif",fontSize:isMobile?32:38,fontWeight:700,color:"white"}}>8.5%</p>
                 </div>
               </div>
             </div>
-
-            {/* Right white */}
-            <div
-              className="emi-right"
-              style={{
-                background:"white",
-                padding: isMobile ? "36px 24px" : isTablet ? "44px 40px" : "60px 52px",
-                display:"flex",flexDirection:"column",
-                borderRadius: (isMobile || isTablet) ? "0 0 26px 26px" : "0 26px 26px 0",
-              }}
-            >
+            <div className="emi-right" style={{background:"white",padding:isMobile?"36px 24px":isTablet?"44px 40px":"60px 52px",display:"flex",flexDirection:"column",borderRadius:(isMobile||isTablet)?"0 0 26px 26px":"0 26px 26px 0"}}>
               <div style={{paddingBottom:28,marginBottom:28,borderBottom:"1px solid rgba(43,57,75,.08)"}}>
                 <p style={{fontSize:11,color:"rgba(43,57,75,.32)",textTransform:"uppercase",letterSpacing:".14em",fontWeight:700,marginBottom:12}}>Monthly EMI</p>
-                <p style={{fontFamily:"'Playfair Display',serif",fontSize: isMobile ? "clamp(44px,10vw,64px)" : "clamp(52px,5vw,76px)",fontWeight:800,color:D,lineHeight:1}}>₹{fmt(emi)}</p>
+                <p style={{fontFamily:"'Playfair Display',serif",fontSize:isMobile?"clamp(44px,10vw,64px)":"clamp(52px,5vw,76px)",fontWeight:800,color:D,lineHeight:1}}>₹{fmt(emi)}</p>
                 <p style={{fontSize:13,color:"rgba(43,57,75,.35)",marginTop:10}}>for {tenure} years · {n} instalments</p>
                 <div style={{marginTop:20,height:8,borderRadius:4,background:"rgba(43,57,75,.07)",overflow:"hidden"}}>
                   <div style={{height:"100%",width:`${(amount/total)*100}%`,background:D,borderRadius:4,transition:"width .5s ease"}}/>
@@ -515,7 +479,6 @@ export default function ClearFund() {
                   <span style={{fontSize:11,color:"rgba(43,57,75,.38)"}}>Interest {Math.round(interest/total*100)}%</span>
                 </div>
               </div>
-
               <div style={{flex:1,marginBottom:28}}>
                 {[["Principal Amount",amount,false],["Total Interest",interest,false],["Total Payment",total,true]].map(([label,val,bold])=>(
                   <div key={label} style={{display:"flex",justifyContent:"space-between",padding:"13px 0",borderBottom:label!=="Total Payment"?"1px dashed rgba(43,57,75,.09)":"none"}}>
@@ -524,28 +487,24 @@ export default function ClearFund() {
                   </div>
                 ))}
               </div>
-
-              <button className="btn-dark" style={{width:"100%",padding:"15px",fontSize:15,borderRadius:10}}>
-                Apply for this Loan →
-              </button>
+              <button className="btn-dark" style={{width:"100%",padding:"15px",fontSize:15,borderRadius:10}}>Apply for this Loan →</button>
             </div>
           </div>
         </div>
       </section>
 
       {/* ══════════ TESTIMONIALS ══════════ */}
-      <section style={{background:D, padding: isMobile ? "64px 20px" : isTablet ? "80px 40px" : "110px 72px", position:"relative",overflow:"hidden"}}>
+      <section style={{background:D,padding:isMobile?"64px 20px":isTablet?"80px 40px":"110px 72px",position:"relative",overflow:"hidden"}}>
         <div style={{position:"absolute",top:0,right:0,width:450,height:450,borderRadius:"50%",background:"rgba(255,255,255,.025)",transform:"translate(35%,-35%)"}}/>
         <div style={{position:"absolute",bottom:0,left:0,width:300,height:300,borderRadius:"50%",background:"rgba(255,255,255,.02)",transform:"translate(-35%,35%)"}}/>
-
         <div style={{maxWidth:1200,margin:"0 auto",position:"relative",zIndex:1}}>
-          <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-end",marginBottom: isMobile ? 40 : 64,flexWrap:"wrap",gap:24}}>
+          <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-end",marginBottom:isMobile?40:64,flexWrap:"wrap",gap:24}}>
             <div>
               <div style={{display:"flex",alignItems:"center",gap:12,marginBottom:16}}>
                 <div style={{height:1,width:28,background:"rgba(255,255,255,.2)"}}/>
                 <span style={{fontSize:11,fontWeight:700,color:"rgba(255,255,255,.35)",textTransform:"uppercase",letterSpacing:".14em"}}>Testimonials</span>
               </div>
-              <h2 style={{fontFamily:"'Playfair Display',serif",fontSize: isMobile ? "clamp(30px,8vw,44px)" : "clamp(36px,4vw,58px)",fontWeight:800,color:"white",lineHeight:1.05}}>
+              <h2 style={{fontFamily:"'Playfair Display',serif",fontSize:isMobile?"clamp(30px,8vw,44px)":"clamp(36px,4vw,58px)",fontWeight:800,color:"white",lineHeight:1.05}}>
                 What our<br/><em style={{fontStyle:"italic"}}>customers say</em>
               </h2>
             </div>
@@ -554,22 +513,14 @@ export default function ClearFund() {
               <span style={{fontSize:14,color:"rgba(255,255,255,.45)",marginLeft:10,fontWeight:600}}>4.9 / 5.0</span>
             </div>
           </div>
-
-          <div
-            className="testimonials-grid"
-            style={{
-              display:"grid",
-              gridTemplateColumns: isMobile ? "1fr" : isTablet ? "1fr 1fr" : "1.15fr 1fr 1fr",
-              gap: isMobile ? 14 : 20,
-            }}
-          >
+          <div className="testimonials-grid" style={{display:"grid",gridTemplateColumns:isMobile?"1fr":isTablet?"1fr 1fr":"1.15fr 1fr 1fr",gap:isMobile?14:20}}>
             {TESTIMONIALS.map((t,idx)=>(
-              <div key={t.name} className="t-card" style={{padding: idx===0 && !isMobile ? 40 : 28}}>
+              <div key={t.name} className="t-card" style={{padding:idx===0&&!isMobile?40:28}}>
                 <div style={{display:"flex",gap:2,marginBottom:16}}>
                   {[...Array(t.rating)].map((_,i)=><Icon key={i} name="star" size={13} style={{color:"#f59e0b"}}/>)}
                 </div>
                 <Icon name="quote" size={28} style={{color:"rgba(43,57,75,.1)",marginBottom:10}}/>
-                <p style={{fontSize: idx===0 && !isMobile ? 16 : 14,color:"rgba(43,57,75,.62)",lineHeight:1.9,marginBottom:24}}>{t.text}</p>
+                <p style={{fontSize:idx===0&&!isMobile?16:14,color:"rgba(43,57,75,.62)",lineHeight:1.9,marginBottom:24}}>{t.text}</p>
                 <div style={{display:"flex",alignItems:"center",gap:12}}>
                   <div style={{width:44,height:44,borderRadius:"50%",background:D,display:"flex",alignItems:"center",justifyContent:"center",fontSize:13,fontWeight:700,color:"white",flexShrink:0}}>{t.initials}</div>
                   <div>
@@ -584,43 +535,26 @@ export default function ClearFund() {
       </section>
 
       {/* ══════════ FAQ ══════════ */}
-      <section style={{background:"#cacdd2", padding: isMobile ? "64px 20px" : isTablet ? "80px 40px" : "110px 72px"}}>
-        <div
-          className="faq-grid"
-          style={{
-            maxWidth:1100,margin:"0 auto",
-            display:"grid",
-            gridTemplateColumns: isMobile || isTablet ? "1fr" : "1fr 1.5fr",
-            gap: isMobile ? 32 : isTablet ? 40 : 80,
-            alignItems:"start",
-          }}
-        >
-          <div className="faq-sticky" style={{position: (!isMobile && !isTablet) ? "sticky" : "static", top:100}}>
+      <section style={{background:"#cacdd2",padding:isMobile?"64px 20px":isTablet?"80px 40px":"110px 72px"}}>
+        <div className="faq-grid" style={{maxWidth:1100,margin:"0 auto",display:"grid",gridTemplateColumns:isMobile||isTablet?"1fr":"1fr 1.5fr",gap:isMobile?32:isTablet?40:80,alignItems:"start"}}>
+          <div className="faq-sticky" style={{position:(!isMobile&&!isTablet)?"sticky":"static",top:100}}>
             <div style={{display:"flex",alignItems:"center",gap:12,marginBottom:16}}>
               <div style={{height:2,width:28,background:D}}/>
               <span style={{fontSize:11,fontWeight:700,color:"rgba(43,57,75,.4)",textTransform:"uppercase",letterSpacing:".14em"}}>FAQ</span>
             </div>
-            <h2 style={{fontFamily:"'Playfair Display',serif",fontSize: isMobile ? "clamp(30px,8vw,44px)" : "clamp(36px,4vw,54px)",fontWeight:800,color:D,lineHeight:1.1,marginBottom:16}}>
+            <h2 style={{fontFamily:"'Playfair Display',serif",fontSize:isMobile?"clamp(30px,8vw,44px)":"clamp(36px,4vw,54px)",fontWeight:800,color:D,lineHeight:1.1,marginBottom:16}}>
               Frequently<br/>asked<br/><em style={{fontStyle:"italic"}}>questions</em>
             </h2>
-            <p style={{fontSize:14,color:"rgba(43,57,75,.42)",lineHeight:1.85,maxWidth:260,marginBottom:28}}>
-              Can't find an answer? Our team is here 24/7.
-            </p>
+            <p style={{fontSize:14,color:"rgba(43,57,75,.42)",lineHeight:1.85,maxWidth:260,marginBottom:28}}>Can't find an answer? Our team is here 24/7.</p>
             <button className="btn-dark" style={{borderRadius:8,display:"flex",alignItems:"center",gap:8}}>
               <Icon name="phone" size={14} style={{color:"white"}}/> Contact Support
             </button>
           </div>
-
           <div style={{display:"flex",flexDirection:"column",gap:10}}>
             {FAQS.map((faq,idx)=>(
-              <div key={idx} style={{
-                background:"white",borderRadius:16,overflow:"hidden",
-                border:`1px solid rgba(43,57,75,${activeFaq===idx?.12:.06})`,
-                boxShadow:activeFaq===idx?"0 8px 32px rgba(43,57,75,.09)":"none",
-                transition:"all .3s",
-              }}>
+              <div key={idx} style={{background:"white",borderRadius:16,overflow:"hidden",border:`1px solid rgba(43,57,75,${activeFaq===idx?.12:.06})`,boxShadow:activeFaq===idx?"0 8px 32px rgba(43,57,75,.09)":"none",transition:"all .3s"}}>
                 <button onClick={()=>setFaq(activeFaq===idx?null:idx)} style={{width:"100%",display:"flex",justifyContent:"space-between",alignItems:"center",padding:"20px 22px",background:"none",border:"none",cursor:"pointer",textAlign:"left",fontFamily:"inherit"}}>
-                  <span style={{fontSize: isMobile ? 14 : 15,fontWeight:600,color:D,paddingRight:16}}>{faq.q}</span>
+                  <span style={{fontSize:isMobile?14:15,fontWeight:600,color:D,paddingRight:16}}>{faq.q}</span>
                   <div style={{width:30,height:30,borderRadius:"50%",flexShrink:0,background:activeFaq===idx?D:"rgba(43,57,75,.07)",display:"flex",alignItems:"center",justifyContent:"center",transition:"background .25s"}}>
                     <Icon name="plus" size={13} style={{color:activeFaq===idx?"white":D,transform:activeFaq===idx?"rotate(45deg)":"none",transition:"transform .25s"}}/>
                   </div>
@@ -635,39 +569,23 @@ export default function ClearFund() {
       </section>
 
       {/* ══════════ CTA ══════════ */}
-      <section style={{padding: isMobile ? "40px 20px 60px" : isTablet ? "60px 40px" : "80px 72px", background:"#cacdd2"}}>
+      <section style={{padding:isMobile?"40px 20px 60px":isTablet?"60px 40px":"80px 72px",background:"#cacdd2"}}>
         <div style={{maxWidth:1200,margin:"0 auto"}}>
-          <div
-            className="cta-grid"
-            style={{
-              background:D,borderRadius:28,
-              padding: isMobile ? "44px 24px" : isTablet ? "52px 40px" : "76px 72px",
-              display:"grid",
-              gridTemplateColumns: isMobile || isTablet ? "1fr" : "1fr auto",
-              gap: isMobile ? 28 : isTablet ? 32 : 48,
-              alignItems:"center",
-              position:"relative",overflow:"hidden",
-            }}
-          >
+          <div className="cta-grid" style={{background:D,borderRadius:28,padding:isMobile?"44px 24px":isTablet?"52px 40px":"76px 72px",display:"grid",gridTemplateColumns:isMobile||isTablet?"1fr":"1fr auto",gap:isMobile?28:isTablet?32:48,alignItems:"center",position:"relative",overflow:"hidden"}}>
             <div style={{position:"absolute",right:-90,top:-90,width:340,height:340,borderRadius:"50%",border:"1px solid rgba(255,255,255,.06)"}}/>
             <div style={{position:"absolute",right:60,bottom:-120,width:220,height:220,borderRadius:"50%",border:"1px solid rgba(255,255,255,.04)"}}/>
-            {!isMobile && <div style={{position:"absolute",left:400,top:0,bottom:0,width:1,background:"rgba(255,255,255,.055)"}}/>}
-
+            {!isMobile&&<div style={{position:"absolute",left:400,top:0,bottom:0,width:1,background:"rgba(255,255,255,.055)"}}/>}
             <div style={{position:"relative",zIndex:1}}>
               <span style={{fontSize:11,fontWeight:700,color:"rgba(255,255,255,.36)",textTransform:"uppercase",letterSpacing:".14em"}}>Get Started Today</span>
-              <h2 style={{fontFamily:"'Playfair Display',serif",fontSize: isMobile ? "clamp(34px,9vw,48px)" : "clamp(38px,4vw,64px)",fontWeight:800,color:"white",marginTop:10,lineHeight:1.05}}>
+              <h2 style={{fontFamily:"'Playfair Display',serif",fontSize:isMobile?"clamp(34px,9vw,48px)":"clamp(38px,4vw,64px)",fontWeight:800,color:"white",marginTop:10,lineHeight:1.05}}>
                 Ready to get<br/><em style={{fontStyle:"italic",color:"rgba(255,255,255,.55)"}}>started?</em>
               </h2>
             </div>
-
             <div style={{position:"relative",zIndex:1}}>
-              <p style={{fontSize:15,color:"rgba(255,255,255,.42)",lineHeight:1.85,maxWidth:300,marginBottom:24}}>
-                Join thousands of happy customers who trusted ClearFund for their financial journey.
-              </p>
+              <p style={{fontSize:15,color:"rgba(255,255,255,.42)",lineHeight:1.85,maxWidth:300,marginBottom:24}}>Join thousands of happy customers who trusted ClearFund for their financial journey.</p>
               <div className="cta-buttons" style={{display:"flex",gap:12,flexWrap:"wrap"}}>
                 <button className="btn-outline">Learn More</button>
-                <button
-                  style={{background:"white",color:D,border:"none",borderRadius:7,padding:"13px 32px",fontSize:15,fontWeight:700,cursor:"pointer",fontFamily:"inherit",transition:"all .2s",whiteSpace:"nowrap"}}
+                <button style={{background:"white",color:D,border:"none",borderRadius:7,padding:"13px 32px",fontSize:15,fontWeight:700,cursor:"pointer",fontFamily:"inherit",transition:"all .2s",whiteSpace:"nowrap"}}
                   onMouseEnter={e=>{e.currentTarget.style.transform="translateY(-2px)";e.currentTarget.style.boxShadow="0 10px 32px rgba(0,0,0,.22)"}}
                   onMouseLeave={e=>{e.currentTarget.style.transform="none";e.currentTarget.style.boxShadow="none"}}>
                   Apply Now — Free

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import { Phone, Mail, MapPin, Send, ArrowRight } from 'lucide-react';
 
 const ContactPage = () => {
@@ -22,7 +22,7 @@ const ContactPage = () => {
   const css = `
     @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap');
 
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    
 
     :root {
       --light: #cdd2e4;
@@ -188,8 +188,8 @@ const ContactPage = () => {
     }
     .crow-icon svg { width: 17px; height: 17px; stroke: #2b394b; transition: stroke 0.25s; }
     .crow-lbl {
-      font-size: 9px; letter-spacing: 0.35em; text-transform: uppercase;
-      color: rgba(13,17,23,0.45); margin-bottom: 6px; font-weight: 700;
+      font-size: 13px; letter-spacing: 0.35em; text-transform: uppercase;
+      color: rgba(13,17,23,0.45); margin-bottom: 6px; font-weight: 900;
     }
     .crow-vals p { font-size: 17px; color: #2b394b; line-height: 1.65; font-weight: 600; }
     .crow-note { font-size: 13px; font-style: italic; color: rgba(13,17,23,0.42); margin-top: 4px; }
@@ -412,6 +412,11 @@ const ContactPage = () => {
     }
   `;
 
+
+useEffect(() => {
+  window.scrollTo(0, 0);
+}, []);
+
   return (
     <>
       <style>{css}</style>
@@ -476,9 +481,9 @@ const ContactPage = () => {
                 </p>
                 <div className="crows">
                   {[
-                    { Icon: Phone,  label: 'Call Us',  vals: ['+91 9XXXXXXXXX',],           note: 'Mon – Fri, 8am – 8pm EST' },
-                    { Icon: Mail,   label: 'Email Us', vals: ['support@loanpro.com', 'applications@loanpro.com'],  note: 'Response within 24 hours' },
-                    { Icon: MapPin, label: 'Visit Us', vals: ['Galaxy Diamond Plaza ', 'Noida, 203010'],      note: 'Headquarters, open Mon – Sat' },
+                    { Icon: Phone,  label: 'Call Us',  vals: ['+91 9990607660',],           note: 'Mon – Fri, 8am – 8pm EST' },
+                    { Icon: Mail,   label: 'Email Us', vals: ['support@shivaji.com',],  note: 'Response within 24 hours' },
+                    { Icon: MapPin, label: 'Visit Us', vals: ['Nav durga Mandir, Nirala Greenshire, Sector 2,'],      note: 'Headquarters, open Mon – Sat' },
                   ].map(({ Icon, label, vals, note }, i) => (
                     <div key={i} className="crow">
                       <div className="crow-icon"><Icon /></div>
