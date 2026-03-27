@@ -210,12 +210,9 @@ export default function Navbar() {
 
             {/* Logo */}
             <Link to="/" style={{ textDecoration: "none", display: "flex", alignItems: "center", gap: 10 }}>
-              <span style={{
-                fontFamily: "'Playfair Display', serif",
-                fontSize: "1.22rem", color: "#2b394b", letterSpacing: "-0.02em",
-              }}>
-                Shivaji Finance
-              </span>
+           <img src="/logo.svg" alt="shivaji-finance-logo" className="object-fit h-30 w-30 md:ml-0 xl:ml-0 " style={{
+            marginLeft:"-25px"
+           }}/>
             </Link>
 
             {/* Desktop Links */}
