@@ -451,7 +451,7 @@ const ContactPage = () => {
         <div className="stats">
           <div className="stats-grid">
             {[
-              { n: '$2.4B+', l: 'Loans Disbursed' },
+              { n: '₹2.4CR', l: 'Loans Disbursed' },
               { n: '48,000+', l: 'Happy Clients' },
               { n: '24 hrs', l: 'Approval Time' },
               { n: '15 Years', l: 'Trusted Service' },
@@ -476,9 +476,9 @@ const ContactPage = () => {
                 </p>
                 <div className="crows">
                   {[
-                    { Icon: Phone,  label: 'Call Us',  vals: ['+1 (888) 123-4567', '+1 (888) 765-4321'],           note: 'Mon – Fri, 8am – 8pm EST' },
+                    { Icon: Phone,  label: 'Call Us',  vals: ['+91 9XXXXXXXXX',],           note: 'Mon – Fri, 8am – 8pm EST' },
                     { Icon: Mail,   label: 'Email Us', vals: ['support@loanpro.com', 'applications@loanpro.com'],  note: 'Response within 24 hours' },
-                    { Icon: MapPin, label: 'Visit Us', vals: ['123 Financial District', 'New York, NY 10005'],      note: 'Headquarters, open Mon – Sat' },
+                    { Icon: MapPin, label: 'Visit Us', vals: ['Galaxy Diamond Plaza ', 'Noida, 203010'],      note: 'Headquarters, open Mon – Sat' },
                   ].map(({ Icon, label, vals, note }, i) => (
                     <div key={i} className="crow">
                       <div className="crow-icon"><Icon /></div>
@@ -500,7 +500,7 @@ const ContactPage = () => {
                 <form onSubmit={handleSubmit} className="fields">
                   <div className={`f${focused === 'name' ? ' on' : ''}`}>
                     <label className="f-lbl">Full Name *</label>
-                    <input type="text" name="name" required placeholder="John Doe"
+                    <input type="text" name="name" required placeholder="Full Name"
                       value={formData.name} onChange={handleChange}
                       onFocus={() => setFocused('name')} onBlur={() => setFocused('')}
                       className="f-inp" />
@@ -508,14 +508,14 @@ const ContactPage = () => {
                   <div className="row2">
                     <div className={`f${focused === 'email' ? ' on' : ''}`}>
                       <label className="f-lbl">Email *</label>
-                      <input type="email" name="email" required placeholder="john@example.com"
+                      <input type="email" name="email" required placeholder="mail@example.com"
                         value={formData.email} onChange={handleChange}
                         onFocus={() => setFocused('email')} onBlur={() => setFocused('')}
                         className="f-inp" />
                     </div>
                     <div className={`f${focused === 'phone' ? ' on' : ''}`}>
                       <label className="f-lbl">Phone</label>
-                      <input type="tel" name="phone" placeholder="(555) 123-4567"
+                      <input type="tel" name="phone" placeholder="(+91) 9XXXXXXXXX"
                         value={formData.phone} onChange={handleChange}
                         onFocus={() => setFocused('phone')} onBlur={() => setFocused('')}
                         className="f-inp" />
@@ -563,19 +563,19 @@ const ContactPage = () => {
             </div>
             <div className="map-box">
               <iframe title="Office Location"
-                src="https://www.openstreetmap.org/export/embed.html?bbox=-74.0115%2C40.7055%2C-73.9995%2C40.7175&layer=mapnik&marker=40.7115%2C-74.0055"
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d112109.8564273855!2d77.36367113322723!3d28.586783849690633!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x390cee4b71461185%3A0xd1989111c49e52fa!2sGalaxy%20Diamond%20Plaza!5e0!3m2!1sen!2sin!4v1774598775004!5m2!1sen!2sin"
                 allowFullScreen loading="lazy" />
               <div className="map-pin">
                 <div className="map-pin-lbl">Headquarters</div>
-                <div className="map-pin-addr">123 Financial District<br />New York, NY 10005<br />United States</div>
+                <div className="map-pin-addr">Galaxy Diamond Plaza <br />Noida,203010<br />UP</div>
               </div>
             </div>
             <div className="branches">
               {[
-                { city: 'Manhattan',     address: '350 Fifth Ave, Suite 2300', phone: '+1 (212) 555-0100' },
-                { city: 'Brooklyn',      address: '123 MetroTech Center',      phone: '+1 (718) 555-0200' },
-                { city: 'Queens',        address: '90-15 Queens Blvd',         phone: '+1 (718) 555-0300' },
-                { city: 'Staten Island', address: '2655 Richmond Ave',         phone: '+1 (718) 555-0400' },
+                { city: 'Manhattan',     address: '350 Fifth Ave, Suite 2300', phone: '+91 9999999999' },
+                { city: 'Brooklyn',      address: '123 MetroTech Center',      phone: '+91 9999999999' },
+                { city: 'Queens',        address: '90-15 Queens Blvd',         phone: '+91 9999999999' },
+                { city: 'Staten Island', address: '2655 Richmond Ave',         phone: '+91 9999999999' },
               ].map((b, i) => (
                 <div key={i} className="branch">
                   <div className="br-city">{b.city}</div>

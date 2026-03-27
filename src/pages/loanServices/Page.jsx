@@ -420,7 +420,7 @@ export default function LoanServicePage() {
       </div>
 
       {/* ── BREADCRUMB ── */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3">
+      <div className="max-w-7xl mx-auto px-10 sm:px-6 py-3">
         <nav className="flex items-center gap-1.5 text-xs sm:text-sm flex-wrap" style={{ color: "#2b394b" }}>
           {["Home", "Services", "Loan Services"].map((b, i, arr) => (
             <span key={b} className="flex items-center gap-1.5">

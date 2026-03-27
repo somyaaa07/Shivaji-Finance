@@ -322,9 +322,7 @@ export default function Navbar() {
                 </div>
               ))}
               <div style={{ display: "flex", gap: 10, marginTop: 16 }}>
-                <Link to="/login" style={{ flex: 1, textDecoration: "none" }}>
-                  <button className="btn-login" style={{ width: "100%" }}>Log in</button>
-                </Link>
+             
                 <button className="btn-cta" style={{ flex: 1 }}
                   onClick={() => { setMenuOpen(false); setShowApplyForm(true); }}>
                   Apply Now

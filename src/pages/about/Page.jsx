@@ -281,7 +281,7 @@ export default function About() {
 
         <div style={{
           position: "relative", zIndex: 2,
-          maxWidth: 1200, margin: "0 auto",
+          maxWidth: 1280, margin: "0 auto",
           padding: isMobile ? "40px 20px 48px" : isTablet ? "48px 32px 56px" : "20px 56px 18px",
           width: "100%",
         }}>

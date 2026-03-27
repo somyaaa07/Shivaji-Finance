@@ -294,7 +294,7 @@ export default function ApplyPage({ asModal = false, onClose }) {
                 <Field label="Phone Number" error={errors.phone}>
                   <input
                     type="tel" value={form.phone} onChange={e => set("phone", e.target.value)}
-                    placeholder="+91 98765 43210" style={inputStyle(errors.phone)}
+                    placeholder="+91 99XXXXXXXX" style={inputStyle(errors.phone)}
                     inputMode="tel" autoComplete="tel"
                     onFocus={e => e.target.style.borderColor = "rgba(255,255,255,0.9)"}
                     onBlur={e => e.target.style.borderColor = errors.phone ? "#f87171" : "rgba(255,255,255,0.1)"}
