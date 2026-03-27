@@ -5,8 +5,7 @@ import {
   Phone, Zap, Star, ArrowRight, Car, GraduationCap,
   Briefcase, Home, TrendingUp, AlertCircle, HeartPulse, Plane
 } from "lucide-react";
-
-import ApplyPage from "../../common/Applynow";
+ import ApplyPage from "../../common/Applynow";
 
 const LOAN_TYPES = [
   { id: "home",      label: "Home Loan",      icon: Home        },
@@ -141,8 +140,7 @@ export default function ApplyLoanPage() {
   const [checked, setChecked] = useState({});
   const [quickLoan, setQuickLoan] = useState("home");
   const [quickEmp, setQuickEmp] = useState("salaried");
-
-   const [showApplyForm, setShowApplyForm] = useState(false);
+  const [showApplyForm, setShowApplyForm] = useState(false);
 
   const toggleItem = (key) => setChecked((prev) => ({ ...prev, [key]: !prev[key] }));
 
@@ -160,11 +158,10 @@ export default function ApplyLoanPage() {
 
   const activeData = CHECKLISTS[activeTab];
   const progress = getProgress(activeTab);
-
-   const openApply = () => setShowApplyForm(true);
+  const openApply = () => setShowApplyForm(true);
 
   return (
-    <div style={{ fontFamily: "'DM Sans', sans-serif", background: "#CDCDE4", minHeight: "100vh", color: "#2B394B" }}>
+    <div style={{ fontFamily: "'DM Sans', sans-serif", background: "#cacdd2", minHeight: "100vh", color: "#2B394B" }}>
 
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap');
@@ -176,21 +173,264 @@ export default function ApplyLoanPage() {
         .check-row:hover { background: #CACDD2; border-radius: 8px; }
         .tip-card:hover { box-shadow: 0 8px 24px rgba(43,57,75,0.15); transform: translateY(-2px); border-color: #CACDD2 !important; }
         .btn-outline:hover { background: #CACDD2 !important; }
+
+        /* ── Responsive breakpoints ── */
+
+        /* Hero two-column → single column */
+        .hero-grid {
+          display: grid;
+          grid-template-columns: 1fr 400px;
+          gap: 60px;
+          align-items: center;
+          padding: 80px 60px 70px;
+          max-width: 1280px;
+          margin: 0 auto;
+        }
+        @media (max-width: 1024px) {
+          .hero-grid {
+            grid-template-columns: 1fr;
+            gap: 40px;
+            padding: 60px 40px 50px;
+          }
+        }
+        @media (max-width: 640px) {
+          .hero-grid {
+            padding: 36px 20px 40px;
+            gap: 32px;
+          }
+        }
+
+        /* Hero heading */
+        .hero-heading {
+          font-family: 'Playfair Display', serif;
+          font-size: 50px;
+          font-weight: 900;
+          line-height: 1.1;
+          margin-bottom: 18px;
+          color: #2B394B;
+        }
+        @media (max-width: 768px) {
+          .hero-heading { font-size: 36px; }
+        }
+        @media (max-width: 480px) {
+          .hero-heading { font-size: 28px; }
+        }
+
+        /* Hero CTA buttons */
+        .hero-cta {
+          display: flex;
+          gap: 14px;
+          flex-wrap: wrap;
+        }
+        @media (max-width: 480px) {
+          .hero-cta { flex-direction: column; }
+          .hero-cta button { width: 100%; justify-content: center; }
+        }
+
+        /* Stats bar */
+        .stats-bar {
+          background: #CACDD2;
+          border-top: 1px solid #B8BCC8;
+          border-bottom: 1px solid #B8BCC8;
+          padding: 36px 60px;
+          display: flex;
+          justify-content: center;
+          gap: 80px;
+          flex-wrap: wrap;
+        }
+        @media (max-width: 768px) {
+          .stats-bar {
+            gap: 32px 48px;
+            padding: 28px 24px;
+          }
+        }
+        @media (max-width: 480px) {
+          .stats-bar {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            padding: 24px 20px;
+          }
+        }
+
+        /* Checklist section outer padding */
+        .checklist-section {
+          padding: 70px 60px;
+          max-width: 1200px;
+          margin: 0 auto;
+        }
+        @media (max-width: 1024px) {
+          .checklist-section { padding: 50px 40px; }
+        }
+        @media (max-width: 640px) {
+          .checklist-section { padding: 36px 16px; }
+        }
+
+        /* Checklist heading */
+        .checklist-heading {
+          font-family: 'Playfair Display', serif;
+          font-size: 34px;
+          font-weight: 700;
+          margin-bottom: 12px;
+          color: #2B394B;
+        }
+        @media (max-width: 640px) {
+          .checklist-heading { font-size: 24px; }
+        }
+
+        /* Tab buttons row */
+        .tabs-row {
+          display: flex;
+          justify-content: center;
+          gap: 10px;
+          flex-wrap: wrap;
+          margin-bottom: 36px;
+        }
+        @media (max-width: 480px) {
+          .tabs-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+          }
+          .tab-btn { justify-content: flex-start !important; }
+        }
+
+        /* Checklist card header */
+        .checklist-card-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: flex-start;
+          margin-bottom: 8px;
+          gap: 12px;
+        }
+        @media (max-width: 600px) {
+          .checklist-card-header {
+            flex-direction: column;
+            align-items: stretch;
+          }
+          .checklist-card-header button {
+            align-self: flex-start;
+          }
+        }
+
+        /* Checklist card title */
+        .checklist-card-title {
+          font-family: 'Playfair Display', serif;
+          font-size: 22px;
+          font-weight: 700;
+          color: #2B394B;
+        }
+        @media (max-width: 480px) {
+          .checklist-card-title { font-size: 17px; }
+        }
+
+        /* Checklist groups grid */
+        .checklist-groups {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+          gap: 36px;
+        }
+        @media (max-width: 480px) {
+          .checklist-groups {
+            grid-template-columns: 1fr;
+            gap: 24px;
+          }
+        }
+
+        /* Checklist card padding */
+        .checklist-card {
+          background: #fff;
+          border: 1px solid #B8BCC8;
+          border-radius: 20px;
+          padding: 40px;
+          box-shadow: 0 2px 16px rgba(43,57,75,0.07);
+        }
+        @media (max-width: 640px) {
+          .checklist-card { padding: 24px 16px; border-radius: 14px; }
+        }
+
+        /* Progress bar row */
+        .progress-row {
+          margin-top: 28px;
+          padding-top: 24px;
+          border-top: 1px solid #E8EAED;
+          display: flex;
+          align-items: center;
+          gap: 14px;
+          flex-wrap: wrap;
+        }
+        @media (max-width: 480px) {
+          .progress-row { gap: 8px; }
+          .progress-row .progress-label { font-size: 12px; }
+        }
+
+        /* Tips section */
+        .tips-section {
+          padding: 0 60px 70px;
+          max-width: 1200px;
+          margin: 0 auto;
+        }
+        @media (max-width: 1024px) {
+          .tips-section { padding: 0 40px 50px; }
+        }
+        @media (max-width: 640px) {
+          .tips-section { padding: 0 16px 40px; }
+        }
+
+        /* Tips heading */
+        .tips-heading {
+          font-family: 'Playfair Display', serif;
+          font-size: 28px;
+          font-weight: 700;
+          margin-bottom: 28px;
+          text-align: center;
+          color: #2B394B;
+        }
+        @media (max-width: 480px) {
+          .tips-heading { font-size: 22px; margin-bottom: 20px; }
+        }
+
+        /* Tips grid */
+        .tips-grid {
+          display: grid;
+          grid-template-columns: repeat(3, 1fr);
+          gap: 20px;
+        }
+        @media (max-width: 900px) {
+          .tips-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media (max-width: 540px) {
+          .tips-grid { grid-template-columns: 1fr; gap: 14px; }
+        }
+
+        /* Quick Finder card */
+        .finder-card {
+          background: #fff;
+          border: 1px solid #B8BCC8;
+          border-radius: 20px;
+          padding: 32px;
+          box-shadow: 0 4px 24px rgba(43,57,75,0.10);
+        }
+        @media (max-width: 1024px) {
+          .finder-card { max-width: 560px; width: 100%; }
+        }
+        @media (max-width: 640px) {
+          .finder-card { padding: 22px 16px; border-radius: 14px; }
+        }
       `}</style>
 
-         {showApplyForm && (
-        <ApplyPage asModal onClose={() => setShowApplyForm(false)} />
-      )}
-
+            {showApplyForm && (
+              <ApplyPage asModal onClose={() => setShowApplyForm(false)} />
+            )}
 
       {/* HERO */}
-      <section style={{ display: "grid", gridTemplateColumns: "1fr 400px", gap: 60, alignItems: "center", padding: "80px 60px 70px", maxWidth: 1200, margin: "0 auto" }}>
+      <section className="hero-grid">
         <div>
           <div style={{ display: "inline-flex", alignItems: "center", gap: 8, background: "#CACDD2", border: "1px solid #B8BCC8", color: "#2B394B", fontSize: 11, fontWeight: 700, letterSpacing: "1.2px", textTransform: "uppercase", padding: "6px 14px", borderRadius: 30, marginBottom: 24 }}>
             <span style={{ width: 6, height: 6, background: "#2B394B", borderRadius: "50%", display: "inline-block" }} />
             Complete Loan Document Guide
           </div>
-          <h1 style={{ fontFamily: "'Playfair Display', serif", fontSize: 50, fontWeight: 900, lineHeight: 1.1, marginBottom: 18, color: "#2B394B" }}>
+          <h1 className="hero-heading">
             Know <em style={{ fontStyle: "normal", color: "#4A6580" }}>Exactly</em> What<br />Documents You Need<br />for Your Loan
           </h1>
           <p style={{ color: "#4A6074", fontSize: 16, lineHeight: 1.75, marginBottom: 32, maxWidth: 460 }}>
@@ -204,21 +444,21 @@ export default function ApplyLoanPage() {
               </div>
             ))}
           </div>
-          <div style={{ display: "flex", gap: 14 }}>
+          <div className="hero-cta">
             <button onClick={scrollToChecklist} style={{ background: "#2B394B", color: "#fff", border: "none", padding: "13px 28px", borderRadius: 8, fontSize: 15, fontWeight: 700, cursor: "pointer", display: "flex", alignItems: "center", gap: 8 }}>
               Find My Document List <ArrowRight size={16} />
             </button>
-            <button className="btn-outline" style={{ background: "#fff", color: "#2B394B", border: "1px solid #B8BCC8", padding: "13px 28px", borderRadius: 8, fontSize: 15, fontWeight: 500, cursor: "pointer" }}  onClick={openApply}>
+            <button className="btn-outline" style={{ background: "#fff", color: "#2B394B", border: "1px solid #B8BCC8", padding: "13px 28px", borderRadius: 8, fontSize: 15, fontWeight: 500, cursor: "pointer" }} onClick={openApply}>
               Apply for a Loan
             </button>
           </div>
         </div>
 
         {/* QUICK FINDER */}
-        <div style={{ background: "#fff", border: "1px solid #B8BCC8", borderRadius: 20, padding: 32, boxShadow: "0 4px 24px rgba(43,57,75,0.10)" }}>
+        <div className="finder-card">
           <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 6 }}>
             <Shield size={20} color="#2B394B" />
-            <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: 20, fontWeight: 700, color: "#2B394B" }}>Quick Document Finder</h3>
+            <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: 20, fontWeight: 700, color: "#2B394B", margin: 0 }}>Quick Document Finder</h3>
           </div>
           <p style={{ color: "#7A8FA0", fontSize: 13, marginBottom: 26 }}>Select your loan type to see what you need</p>
 
@@ -251,7 +491,7 @@ export default function ApplyLoanPage() {
       </section>
 
       {/* STATS */}
-      <div style={{ background: "#CACDD2", borderTop: "1px solid #B8BCC8", borderBottom: "1px solid #B8BCC8", padding: "36px 60px", display: "flex", justifyContent: "center", gap: 80 }}>
+      <div className="stats-bar">
         {STATS.map(({ icon: Icon, value, label }) => (
           <div key={label} style={{ textAlign: "center" }}>
             <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 8, marginBottom: 4 }}>
@@ -264,9 +504,9 @@ export default function ApplyLoanPage() {
       </div>
 
       {/* CHECKLIST SECTION */}
-      <section id="checklist-section" style={{ padding: "70px 60px", maxWidth: 1200, margin: "0 auto" }}>
+      <section id="checklist-section" className="checklist-section">
         <div style={{ textAlign: "center", marginBottom: 48 }}>
-          <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: 34, fontWeight: 700, marginBottom: 12, color: "#2B394B" }}>
+          <h2 className="checklist-heading">
             Document Checklists by Loan Type
           </h2>
           <p style={{ color: "#4A6074", fontSize: 15, lineHeight: 1.7, maxWidth: 560, margin: "0 auto" }}>
@@ -275,7 +515,7 @@ export default function ApplyLoanPage() {
         </div>
 
         {/* TABS */}
-        <div style={{ display: "flex", justifyContent: "center", gap: 10, flexWrap: "wrap", marginBottom: 36 }}>
+        <div className="tabs-row">
           {LOAN_TYPES.map(({ id, label, icon: Icon }) => (
             <button key={id} className="tab-btn"
               onClick={() => setActiveTab(id)}
@@ -295,22 +535,22 @@ export default function ApplyLoanPage() {
         </div>
 
         {/* CHECKLIST CARD */}
-        <div style={{ background: "#fff", border: "1px solid #B8BCC8", borderRadius: 20, padding: 40, boxShadow: "0 2px 16px rgba(43,57,75,0.07)" }}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 8 }}>
-            <h3 style={{ fontFamily: "'Playfair Display', serif", fontSize: 22, fontWeight: 700, color: "#2B394B" }}>{activeData.title}</h3>
-            <button onClick={() => window.print()} style={{ display: "flex", alignItems: "center", gap: 7, color: "#2B394B", background: "#CDCDE4", border: "1px solid #B8BCC8", padding: "8px 16px", borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: "pointer" }}>
+        <div className="checklist-card">
+          <div className="checklist-card-header">
+            <h3 className="checklist-card-title">{activeData.title}</h3>
+            <button onClick={() => window.print()} style={{ display: "flex", alignItems: "center", gap: 7, color: "#2B394B", background: "#CDCDE4", border: "1px solid #B8BCC8", padding: "8px 16px", borderRadius: 8, fontSize: 13, fontWeight: 600, cursor: "pointer", whiteSpace: "nowrap", flexShrink: 0 }}>
               <Printer size={14} /> Print Checklist
             </button>
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: 6, marginBottom: 32 }}>
-            <AlertCircle size={14} color="#7A8FA0" />
+            <AlertCircle size={14} color="#7A8FA0" style={{ flexShrink: 0 }} />
             <p style={{ color: "#7A8FA0", fontSize: 13, margin: 0 }}>{activeData.desc}</p>
           </div>
 
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: 36 }}>
+          <div className="checklist-groups">
             {activeData.groups.map((group) => (
               <div key={group.title}>
-                <h4 style={{ fontSize: 12, fontWeight: 700, textTransform: "uppercase", letterSpacing: "1px", color: "#2B394B", paddingBottom: 10, borderBottom: "2px solid #CACDD2", marginBottom: 14 }}>
+                <h4 style={{ fontSize: 12, fontWeight: 700, textTransform: "uppercase", letterSpacing: "1px", color: "#2B394B", paddingBottom: 10, borderBottom: "2px solid #CACDD2", marginBottom: 14, marginTop: 0 }}>
                   {group.title}
                 </h4>
                 {group.items.map((item) => {
@@ -333,10 +573,10 @@ export default function ApplyLoanPage() {
           </div>
 
           {/* PROGRESS */}
-          <div style={{ marginTop: 28, paddingTop: 24, borderTop: "1px solid #E8EAED", display: "flex", alignItems: "center", gap: 14 }}>
-            <FileText size={16} color="#7A8FA0" />
-            <span style={{ fontSize: 13, color: "#7A8FA0", whiteSpace: "nowrap" }}>Documents collected:</span>
-            <div style={{ flex: 1, height: 6, background: "#CACDD2", borderRadius: 99, overflow: "hidden" }}>
+          <div className="progress-row">
+            <FileText size={16} color="#7A8FA0" style={{ flexShrink: 0 }} />
+            <span className="progress-label" style={{ fontSize: 13, color: "#7A8FA0", whiteSpace: "nowrap" }}>Documents collected:</span>
+            <div style={{ flex: 1, minWidth: 60, height: 6, background: "#CACDD2", borderRadius: 99, overflow: "hidden" }}>
               <div style={{ height: "100%", background: "linear-gradient(90deg, #2B394B, #4A6580)", borderRadius: 99, transition: "width 0.4s", width: `${progress.pct}%` }} />
             </div>
             <span style={{ fontSize: 13, fontWeight: 700, color: "#2B394B", whiteSpace: "nowrap" }}>{progress.done}/{progress.total} ({progress.pct}%)</span>
@@ -345,18 +585,16 @@ export default function ApplyLoanPage() {
       </section>
 
       {/* TIPS */}
-      <section style={{ padding: "0 60px 70px", maxWidth: 1200, margin: "0 auto" }}>
-        <h2 style={{ fontFamily: "'Playfair Display', serif", fontSize: 28, fontWeight: 700, marginBottom: 28, textAlign: "center", color: "#2B394B" }}>
-          Expert Tips to Speed Up Approval
-        </h2>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 20 }}>
+      <section className="tips-section">
+        <h2 className="tips-heading">Expert Tips to Speed Up Approval</h2>
+        <div className="tips-grid">
           {TIPS.map(({ icon: Icon, title, text }) => (
             <div key={title} className="tip-card"
               style={{ background: "#fff", border: "1px solid #B8BCC8", borderRadius: 14, padding: 28, transition: "all 0.22s", cursor: "default" }}>
               <div style={{ width: 44, height: 44, background: "#CDCDE4", borderRadius: 12, display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 14 }}>
                 <Icon size={20} color="#2B394B" />
               </div>
-              <h4 style={{ fontSize: 16, fontWeight: 700, marginBottom: 8, color: "#2B394B" }}>{title}</h4>
+              <h4 style={{ fontSize: 16, fontWeight: 700, marginBottom: 8, color: "#2B394B", marginTop: 0 }}>{title}</h4>
               <p style={{ fontSize: 13, color: "#4A6074", lineHeight: 1.65, margin: 0 }}>{text}</p>
             </div>
           ))}
