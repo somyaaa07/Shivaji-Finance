@@ -239,21 +239,100 @@ const LOAN_DATA = {
 export default function LoanServicePage() {
   const [activeLink, setActiveLink] = useState("Home Loan");
   const [activeFaq, setActiveFaq] = useState(null);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const data = LOAN_DATA[activeLink] || LOAN_DATA["Home Loan"];
 
   const handleLoanChange = (label) => {
     setActiveLink(label);
     setActiveFaq(null);
+    setSidebarOpen(false);
   };
 
   return (
     <div className="min-h-screen font-serif" style={{ backgroundColor: "#e8eaed", color: "#2b394b" }}>
 
-      {/* BANNER */}
-      <div className="relative overflow-hidden" style={{ minHeight: 520 }}>
+      {/* ── MOBILE SIDEBAR OVERLAY ── */}
+      {sidebarOpen && (
+        <div
+          className="fixed inset-0 z-40 bg-black/50 lg:hidden"
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
+
+      {/* ── MOBILE DRAWER ── */}
+      <aside
+        className="fixed top-0 left-0 h-full z-50 w-72 flex flex-col gap-4 p-4 overflow-y-auto transition-transform duration-300 lg:hidden"
+        style={{
+          backgroundColor: "#1e2d3d",
+          transform: sidebarOpen ? "translateX(0)" : "translateX(-100%)",
+        }}
+      >
+        <div className="flex justify-between items-center mb-2">
+          <span className="text-white font-bold text-sm uppercase tracking-wide">Loan Categories</span>
+          <button onClick={() => setSidebarOpen(false)} className="text-white p-1">
+            <X size={18} />
+          </button>
+        </div>
+        <ul className="rounded-xl overflow-hidden" style={{ backgroundColor: "#2b394b" }}>
+          {SIDEBAR_LINKS.map((l) => {
+            const Icon = l.icon;
+            const isActive = activeLink === l.label;
+            return (
+              <li key={l.label}>
+                <button
+                  onClick={() => handleLoanChange(l.label)}
+                  className="w-full text-left px-4 py-3 text-sm flex items-center justify-between transition-all"
+                  style={{
+                    backgroundColor: isActive ? "#cacdd2" : "transparent",
+                    color: isActive ? "#2b394b" : "#a8bbc8",
+                    fontWeight: isActive ? 700 : 400,
+                  }}
+                >
+                  <span className="flex items-center gap-3"><Icon size={14} />{l.label}</span>
+                  {isActive && <ChevronRight size={13} />}
+                </button>
+              </li>
+            );
+          })}
+        </ul>
+
+        {/* Quick Apply in drawer */}
+        <div className="rounded-xl p-4" style={{ backgroundColor: "#2b394b" }}>
+          <h3 className="text-white font-bold mb-1 text-sm">Quick Apply</h3>
+          <p className="text-xs mb-3" style={{ color: "#a8bbc8" }}>Get pre-approved in 2 minutes</p>
+          <div className="space-y-2">
+            {["Full Name", "Phone Number", "Loan Amount (₹)"].map((ph) => (
+              <input
+                key={ph}
+                placeholder={ph}
+                className="w-full rounded-lg px-3 py-2 text-sm outline-none"
+                style={{ backgroundColor: "rgba(202,205,210,0.1)", color: "white", border: "1px solid rgba(202,205,210,0.2)" }}
+              />
+            ))}
+            <button
+              className="w-full py-2.5 rounded-lg font-semibold text-sm"
+              style={{ backgroundColor: "#cacdd2", color: "#2b394b" }}
+            >
+              Check Eligibility
+            </button>
+          </div>
+        </div>
+
+        {/* Help in drawer */}
+        <div className="rounded-xl p-4 text-center" style={{ backgroundColor: "#2b394b" }}>
+          <Phone size={24} style={{ color: "#cacdd2" }} className="mx-auto mb-2" />
+          <p className="text-white font-bold text-sm mb-1">Need Help?</p>
+          <p className="text-xs mb-1" style={{ color: "#a8bbc8" }}>Mon – Sat, 9AM – 6PM</p>
+          <p className="font-bold" style={{ color: "#cacdd2" }}>1800-123-4567</p>
+          <p className="text-xs" style={{ color: "#a8bbc8" }}>Toll Free</p>
+        </div>
+      </aside>
+
+      {/* ── BANNER ── */}
+      <div className="relative overflow-hidden" style={{ minHeight: 420 }}>
         <img
-          src="https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?w=1600&q=80"
+          src="https://images.unsplash.com/photo-1560520031-3a4dc4e9de0c?w=1400&q=80"
           alt="Loan Banner"
           className="absolute inset-0 w-full h-full object-cover"
           style={{ filter: "brightness(0.35)" }}
@@ -262,35 +341,48 @@ export default function LoanServicePage() {
           className="absolute inset-0"
           style={{ background: "linear-gradient(135deg, rgba(43,57,75,0.85) 0%, rgba(43,57,75,0.3) 100%)" }}
         />
-        {/* FIX: Added py-16 so banner content has vertical padding and is properly centered */}
-        <div className="relative z-10 max-w-7xl mx-auto px-6 py-16 flex flex-col md:flex-row items-center gap-12 min-h-full" style={{ minHeight: 520 }}>
-          <div className="flex-1 text-white">
-            <p className="text-xs uppercase tracking-[0.3em] mb-4 font-medium" style={{ color: "#a8bbc8" }}>
+
+        {/* Mobile top bar */}
+        <div className="relative z-10 flex items-center justify-between px-4 pt-4 lg:hidden">
+          <button
+            onClick={() => setSidebarOpen(true)}
+            className="flex items-center gap-2 px-3 py-2 rounded-lg text-white text-sm font-medium"
+            style={{ backgroundColor: "rgba(255,255,255,0.15)", border: "1px solid rgba(255,255,255,0.25)" }}
+          >
+            <Menu size={16} />
+            <span>Loan Types</span>
+          </button>
+          <span className="text-white text-xs font-semibold opacity-70">TrustFund Finance</span>
+        </div>
+
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 py-10 sm:py-16 flex flex-col md:flex-row items-center gap-8 md:gap-12" style={{ minHeight: 380 }}>
+          <div className="flex-1 text-white text-center md:text-left">
+            <p className="text-xs uppercase tracking-[0.3em] mb-3 font-medium" style={{ color: "#a8bbc8" }}>
               Trusted Since 2005
             </p>
-            <h1 className="text-5xl md:text-6xl font-bold leading-tight mb-6">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-4 sm:mb-6">
               Your Dream,<br />
               <span style={{ color: "#cacdd2" }}>Our Support.</span>
             </h1>
-            <p className="text-lg text-gray-300 max-w-lg mb-8 leading-relaxed">
+            <p className="text-sm sm:text-base text-gray-300 max-w-lg mb-6 sm:mb-8 leading-relaxed mx-auto md:mx-0">
               Fast approvals, competitive interest rates, and flexible EMI plans — designed to meet every financial need of yours.
             </p>
-            <div className="flex gap-4 flex-wrap">
+            <div className="flex gap-3 flex-wrap justify-center md:justify-start">
               <button
-                className="px-8 py-3 rounded-full font-semibold text-sm tracking-wide transition-all hover:scale-105 flex items-center gap-2"
+                className="px-6 sm:px-8 py-2.5 sm:py-3 rounded-full font-semibold text-sm tracking-wide transition-all hover:scale-105 flex items-center gap-2"
                 style={{ backgroundColor: "#cacdd2", color: "#2b394b" }}
               >
-                Explore Loans <ArrowRight size={15} />
+                Explore Loans <ArrowRight size={14} />
               </button>
-              <button className="px-8 py-3 rounded-full font-semibold text-sm tracking-wide border border-white text-white hover:bg-white hover:text-gray-800 transition-all">
+              <button className="px-6 sm:px-8 py-2.5 sm:py-3 rounded-full font-semibold text-sm tracking-wide border border-white text-white hover:bg-white hover:text-gray-800 transition-all">
                 EMI Calculator
               </button>
             </div>
           </div>
 
-          {/* Stats card */}
+          {/* Stats card — hidden on very small, shown md+ */}
           <div
-            className="flex-shrink-0 rounded-2xl p-8 w-full max-w-xs shadow-2xl"
+            className="hidden sm:block flex-shrink-0 rounded-2xl p-6 sm:p-8 w-full max-w-xs shadow-2xl"
             style={{
               backgroundColor: "rgba(202,205,210,0.12)",
               border: "1px solid rgba(202,205,210,0.25)",
@@ -303,41 +395,76 @@ export default function LoanServicePage() {
               { val: "8.5%", label: "Interest Rate p.a." },
               { val: "24 Hrs", label: "Quick Disbursal" },
             ].map((s) => (
-              <div
-                key={s.label}
-                className="flex justify-between items-center py-3 border-b border-white/10 last:border-0"
-              >
+              <div key={s.label} className="flex justify-between items-center py-3 border-b border-white/10 last:border-0">
                 <span className="text-gray-300 text-sm">{s.label}</span>
-                <span className="text-white font-bold text-lg">{s.val}</span>
+                <span className="text-white font-bold text-base sm:text-lg">{s.val}</span>
+              </div>
+            ))}
+          </div>
+
+          {/* Stats row on tiny screens */}
+          <div className="sm:hidden grid grid-cols-2 gap-2 w-full">
+            {[
+              { val: "₹500Cr+", label: "Disbursed" },
+              { val: "1.2L+", label: "Customers" },
+              { val: "8.5%", label: "Rate p.a." },
+              { val: "24 Hrs", label: "Disbursal" },
+            ].map((s) => (
+              <div key={s.label} className="rounded-xl p-3 text-center" style={{ backgroundColor: "rgba(202,205,210,0.15)", border: "1px solid rgba(202,205,210,0.2)" }}>
+                <div className="text-white font-bold text-base">{s.val}</div>
+                <div className="text-gray-300 text-xs mt-0.5">{s.label}</div>
               </div>
             ))}
           </div>
         </div>
       </div>
 
-      {/* BREADCRUMB */}
-      <div className="max-w-7xl mx-auto px-6 py-4">
-        <nav className="flex items-center gap-2 text-sm" style={{ color: "#2b394b" }}>
+      {/* ── BREADCRUMB ── */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-3">
+        <nav className="flex items-center gap-1.5 text-xs sm:text-sm flex-wrap" style={{ color: "#2b394b" }}>
           {["Home", "Services", "Loan Services"].map((b, i, arr) => (
-            <span key={b} className="flex items-center gap-2">
+            <span key={b} className="flex items-center gap-1.5">
               <a href="#" className={i === arr.length - 1 ? "font-semibold" : "opacity-60 hover:opacity-100 transition-opacity"}>
                 {b}
               </a>
-              {i < arr.length - 1 && <ChevronRight size={14} className="opacity-40" />}
+              {i < arr.length - 1 && <ChevronRight size={12} className="opacity-40" />}
             </span>
           ))}
         </nav>
       </div>
 
-      {/* MAIN LAYOUT — FIX: removed overflow from sidebar, use proper top offset */}
-      <div className="max-w-7xl mx-auto px-6 pb-16 flex flex-col lg:flex-row gap-8 items-start">
+      {/* ── MOBILE LOAN TYPE HORIZONTAL SCROLL ── */}
+      <div className="lg:hidden px-4 sm:px-6 pb-4 overflow-x-auto">
+        <div className="flex gap-2 w-max">
+          {SIDEBAR_LINKS.map((l) => {
+            const Icon = l.icon;
+            const isActive = activeLink === l.label;
+            return (
+              <button
+                key={l.label}
+                onClick={() => handleLoanChange(l.label)}
+                className="flex items-center gap-2 px-3 py-2 rounded-full text-xs font-medium whitespace-nowrap transition-all flex-shrink-0"
+                style={{
+                  backgroundColor: isActive ? "#2b394b" : "white",
+                  color: isActive ? "#cacdd2" : "#2b394b",
+                  border: "1px solid",
+                  borderColor: isActive ? "#2b394b" : "#d1d5db",
+                  boxShadow: isActive ? "0 2px 8px rgba(43,57,75,0.25)" : "none",
+                }}
+              >
+                <Icon size={13} />
+                {l.label}
+              </button>
+            );
+          })}
+        </div>
+      </div>
 
-        {/* LEFT SIDEBAR */}
-        <aside
-          className="lg:w-64 flex-shrink-0 space-y-4 lg:sticky"
-          style={{ top: "1.5rem" }}
-        >
-          {/* Loan categories */}
+      {/* ── MAIN LAYOUT ── */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 pb-16 flex flex-col lg:flex-row gap-6 lg:gap-8 items-start">
+
+        {/* ── DESKTOP LEFT SIDEBAR ── */}
+        <aside className="hidden lg:flex lg:w-64 flex-shrink-0 flex-col gap-4 sticky" style={{ top: "1.5rem" }}>
           <div className="rounded-2xl overflow-hidden shadow-md" style={{ backgroundColor: "#2b394b" }}>
             <div className="px-5 py-3 border-b border-white/10">
               <h3 className="text-white font-bold tracking-wide text-xs uppercase">Loan Categories</h3>
@@ -357,14 +484,8 @@ export default function LoanServicePage() {
                         fontWeight: isActive ? 700 : 400,
                       }}
                     >
-                      <span className="flex items-center gap-3">
-                        <Icon size={14} />
-                        {l.label}
-                      </span>
-                      <ChevronRight
-                        size={13}
-                        className={`transition-opacity ${isActive ? "opacity-100" : "opacity-0 group-hover:opacity-50"}`}
-                      />
+                      <span className="flex items-center gap-3"><Icon size={14} />{l.label}</span>
+                      <ChevronRight size={13} className={`transition-opacity ${isActive ? "opacity-100" : "opacity-0 group-hover:opacity-50"}`} />
                     </button>
                   </li>
                 );
@@ -372,7 +493,6 @@ export default function LoanServicePage() {
             </ul>
           </div>
 
-          {/* Quick Apply */}
           <div className="rounded-2xl p-5 shadow-md" style={{ backgroundColor: "#2b394b" }}>
             <h3 className="text-white font-bold mb-1 text-sm">Quick Apply</h3>
             <p className="text-xs mb-4" style={{ color: "#a8bbc8" }}>Get pre-approved in 2 minutes</p>
@@ -382,11 +502,7 @@ export default function LoanServicePage() {
                   key={ph}
                   placeholder={ph}
                   className="w-full rounded-lg px-3 py-2 text-sm outline-none focus:ring-2"
-                  style={{
-                    backgroundColor: "rgba(202,205,210,0.1)",
-                    color: "white",
-                    border: "1px solid rgba(202,205,210,0.2)",
-                  }}
+                  style={{ backgroundColor: "rgba(202,205,210,0.1)", color: "white", border: "1px solid rgba(202,205,210,0.2)" }}
                 />
               ))}
               <button
@@ -398,7 +514,6 @@ export default function LoanServicePage() {
             </div>
           </div>
 
-          {/* Help */}
           <div className="rounded-2xl p-5 text-center shadow-md" style={{ backgroundColor: "#2b394b" }}>
             <div className="flex justify-center mb-2">
               <Phone size={28} style={{ color: "#cacdd2" }} />
@@ -410,26 +525,26 @@ export default function LoanServicePage() {
           </div>
         </aside>
 
-        {/* RIGHT MAIN CONTENT */}
-        <main className="flex-1 min-w-0 space-y-8">
+        {/* ── RIGHT MAIN CONTENT ── */}
+        <main className="flex-1 min-w-0 space-y-6 sm:space-y-8">
 
           {/* About section */}
           <section className="rounded-2xl overflow-hidden shadow-md" style={{ backgroundColor: "white" }}>
-            <div className="flex flex-col md:flex-row">
+            <div className="flex flex-col sm:flex-row">
               <img
                 src={data.image}
                 alt={activeLink}
-                className="w-full md:w-52 object-cover flex-shrink-0"
-                style={{ minHeight: 200, maxHeight: 300 }}
+                className="w-full sm:w-44 md:w-52 object-cover flex-shrink-0"
+                style={{ minHeight: 180, maxHeight: 260 }}
               />
-              <div className="p-6">
+              <div className="p-4 sm:p-6">
                 <span
-                  className="text-xs uppercase tracking-widest font-semibold px-3 py-1 rounded-full mb-4 inline-block"
+                  className="text-xs uppercase tracking-widest font-semibold px-3 py-1 rounded-full mb-3 inline-block"
                   style={{ backgroundColor: "#e8eaed", color: "#2b394b" }}
                 >
                   {data.tagline}
                 </span>
-                <h2 className="text-xl font-bold mb-2" style={{ color: "#2b394b" }}>{data.headline}</h2>
+                <h2 className="text-lg sm:text-xl font-bold mb-2" style={{ color: "#2b394b" }}>{data.headline}</h2>
                 <p className="text-sm leading-relaxed text-gray-500">{data.description}</p>
 
                 {/* Key stats */}
@@ -440,17 +555,17 @@ export default function LoanServicePage() {
                     { label: "Tenure", val: data.tenure },
                     { label: "Disbursal", val: data.disbursal },
                   ].map((s) => (
-                    <div key={s.label} className="rounded-xl p-3 text-center" style={{ backgroundColor: "#e8eaed" }}>
-                      <div className="font-bold text-sm" style={{ color: "#2b394b" }}>{s.val}</div>
+                    <div key={s.label} className="rounded-xl p-2.5 sm:p-3 text-center" style={{ backgroundColor: "#e8eaed" }}>
+                      <div className="font-bold text-xs sm:text-sm" style={{ color: "#2b394b" }}>{s.val}</div>
                       <div className="text-xs mt-0.5 opacity-60" style={{ color: "#2b394b" }}>{s.label}</div>
                     </div>
                   ))}
                 </div>
 
-                <div className="flex gap-3 mt-4 flex-wrap">
+                <div className="flex gap-2 sm:gap-3 mt-4 flex-wrap">
                   {data.features.map((f) => (
                     <div key={f} className="flex items-center gap-1.5 text-xs font-medium" style={{ color: "#2b394b" }}>
-                      <CheckCircle2 size={14} style={{ color: "#2b394b" }} />
+                      <CheckCircle2 size={13} style={{ color: "#2b394b" }} />
                       {f}
                     </div>
                   ))}
@@ -459,25 +574,20 @@ export default function LoanServicePage() {
             </div>
           </section>
 
-          {/* How to Apply — FIX: changed grid to 1→2→3 cols properly, cards won't overflow */}
+          {/* How to Apply */}
           <section>
-            <h2 className="text-xl font-bold mb-5" style={{ color: "#2b394b" }}>
+            <h2 className="text-lg sm:text-xl font-bold mb-4 sm:mb-5" style={{ color: "#2b394b" }}>
               How to Apply for {activeLink}
             </h2>
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))",
-                gap: "1rem",
-              }}
-            >
+            {/* Responsive grid: 1 col mobile → 2 col sm → 3+ col lg */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-3 sm:gap-4">
               {data.steps.map((s) => (
                 <div
                   key={s.step}
-                  className="rounded-2xl p-5 shadow-sm hover:shadow-md transition-shadow"
+                  className="rounded-2xl p-4 sm:p-5 shadow-sm hover:shadow-md transition-shadow"
                   style={{ backgroundColor: "white" }}
                 >
-                  <div className="text-3xl font-black mb-2 opacity-15" style={{ color: "#2b394b" }}>{s.step}</div>
+                  <div className="text-2xl sm:text-3xl font-black mb-2 opacity-15" style={{ color: "#2b394b" }}>{s.step}</div>
                   <h3 className="font-bold text-sm mb-1.5" style={{ color: "#2b394b" }}>{s.title}</h3>
                   <p className="text-xs text-gray-500 leading-relaxed">{s.desc}</p>
                 </div>
@@ -487,21 +597,14 @@ export default function LoanServicePage() {
 
           {/* Eligibility */}
           <section>
-            <h2 className="text-xl font-bold mb-5" style={{ color: "#2b394b" }}>Eligibility Conditions</h2>
+            <h2 className="text-lg sm:text-xl font-bold mb-4 sm:mb-5" style={{ color: "#2b394b" }}>Eligibility Conditions</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {data.conditions.map((c) => {
                 const Icon = c.icon;
                 return (
-                  <div
-                    key={c.title}
-                    className="rounded-2xl p-4 flex gap-3 shadow-sm"
-                    style={{ backgroundColor: "white" }}
-                  >
-                    <div
-                      className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
-                      style={{ backgroundColor: "#e8eaed" }}
-                    >
-                      <Icon size={18} style={{ color: "#2b394b" }} />
+                  <div key={c.title} className="rounded-2xl p-4 flex gap-3 shadow-sm" style={{ backgroundColor: "white" }}>
+                    <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center flex-shrink-0" style={{ backgroundColor: "#e8eaed" }}>
+                      <Icon size={16} style={{ color: "#2b394b" }} />
                     </div>
                     <div>
                       <h4 className="font-bold text-sm mb-1" style={{ color: "#2b394b" }}>{c.title}</h4>
@@ -513,32 +616,19 @@ export default function LoanServicePage() {
             </div>
           </section>
 
-          {/* Documents — FIX: auto-fill grid so cards don't overflow */}
+          {/* Documents */}
           <section>
-            <h2 className="text-xl font-bold mb-5" style={{ color: "#2b394b" }}>Documents Required</h2>
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))",
-                gap: "1rem",
-              }}
-            >
+            <h2 className="text-lg sm:text-xl font-bold mb-4 sm:mb-5" style={{ color: "#2b394b" }}>Documents Required</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-3 sm:gap-4">
               {data.docs.map((d) => (
-                <div key={d.category} className="rounded-2xl p-5 shadow-sm" style={{ backgroundColor: "white" }}>
-                  <h4
-                    className="font-bold text-sm mb-3 pb-2 border-b"
-                    style={{ color: "#2b394b", borderColor: "#e8eaed" }}
-                  >
+                <div key={d.category} className="rounded-2xl p-4 sm:p-5 shadow-sm" style={{ backgroundColor: "white" }}>
+                  <h4 className="font-bold text-sm mb-3 pb-2 border-b" style={{ color: "#2b394b", borderColor: "#e8eaed" }}>
                     {d.category}
                   </h4>
                   <ul className="space-y-2">
                     {d.items.map((item) => (
                       <li key={item} className="flex items-start gap-2 text-xs text-gray-600">
-                        <CheckCircle2
-                          size={13}
-                          className="mt-0.5 flex-shrink-0"
-                          style={{ color: "#2b394b" }}
-                        />
+                        <CheckCircle2 size={13} className="mt-0.5 flex-shrink-0" style={{ color: "#2b394b" }} />
                         {item}
                       </li>
                     ))}
@@ -549,25 +639,21 @@ export default function LoanServicePage() {
           </section>
 
           {/* Promo Banner */}
-          <section className="rounded-2xl overflow-hidden relative shadow-md" style={{ minHeight: 200 }}>
+          <section className="rounded-2xl overflow-hidden relative shadow-md" style={{ minHeight: 160 }}>
             <img
               src="https://images.unsplash.com/photo-1611348586804-61bf6c080437?w=1200&q=80"
               alt="Financial Growth"
               className="absolute inset-0 w-full h-full object-cover"
               style={{ filter: "brightness(0.4)" }}
             />
-            <div className="relative z-10 p-8 flex flex-col md:flex-row items-center justify-between gap-6">
+            <div className="relative z-10 p-5 sm:p-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 sm:gap-6">
               <div>
-                <p className="text-xs uppercase tracking-widest mb-2" style={{ color: "#a8bbc8" }}>
-                  Limited Period Offer
-                </p>
-                <h3 className="text-2xl font-black text-white">Get 0% Processing Fee</h3>
-                <p className="text-gray-300 text-sm mt-1">
-                  On all {activeLink} applications this month. T&C apply.
-                </p>
+                <p className="text-xs uppercase tracking-widest mb-2" style={{ color: "#a8bbc8" }}>Limited Period Offer</p>
+                <h3 className="text-xl sm:text-2xl font-black text-white">Get 0% Processing Fee</h3>
+                <p className="text-gray-300 text-sm mt-1">On all {activeLink} applications this month. T&C apply.</p>
               </div>
               <button
-                className="px-7 py-3 rounded-full font-semibold text-sm tracking-wide hover:scale-105 transition-transform flex-shrink-0 flex items-center gap-2"
+                className="px-5 sm:px-7 py-2.5 sm:py-3 rounded-full font-semibold text-sm tracking-wide hover:scale-105 transition-transform flex-shrink-0 flex items-center gap-2"
                 style={{ backgroundColor: "#cacdd2", color: "#2b394b" }}
               >
                 Claim Offer <ArrowRight size={14} />
@@ -577,34 +663,23 @@ export default function LoanServicePage() {
 
           {/* FAQ */}
           <section>
-            <h2 className="text-xl font-bold mb-5" style={{ color: "#2b394b" }}>Frequently Asked Questions</h2>
+            <h2 className="text-lg sm:text-xl font-bold mb-4 sm:mb-5" style={{ color: "#2b394b" }}>Frequently Asked Questions</h2>
             <div className="space-y-3">
               {data.faqs.map((faq, i) => (
-                <div
-                  key={i}
-                  className="rounded-2xl overflow-hidden shadow-sm"
-                  style={{ backgroundColor: "white" }}
-                >
+                <div key={i} className="rounded-2xl overflow-hidden shadow-sm" style={{ backgroundColor: "white" }}>
                   <button
                     onClick={() => setActiveFaq(activeFaq === i ? null : i)}
-                    className="w-full px-5 py-4 text-left flex justify-between items-center font-semibold text-sm transition-colors"
+                    className="w-full px-4 sm:px-5 py-4 text-left flex justify-between items-center font-semibold text-sm transition-colors gap-3"
                     style={{ color: "#2b394b" }}
                   >
-                    {faq.q}
+                    <span>{faq.q}</span>
                     <Plus
                       size={16}
-                      style={{
-                        transform: activeFaq === i ? "rotate(45deg)" : "none",
-                        transition: "transform 0.2s",
-                        flexShrink: 0,
-                      }}
+                      style={{ transform: activeFaq === i ? "rotate(45deg)" : "none", transition: "transform 0.2s", flexShrink: 0 }}
                     />
                   </button>
                   {activeFaq === i && (
-                    <div
-                      className="px-5 pb-4 text-sm text-gray-500 leading-relaxed border-t"
-                      style={{ borderColor: "#e8eaed" }}
-                    >
+                    <div className="px-4 sm:px-5 pb-4 text-sm text-gray-500 leading-relaxed border-t" style={{ borderColor: "#e8eaed" }}>
                       {faq.a}
                     </div>
                   )}
@@ -612,6 +687,24 @@ export default function LoanServicePage() {
               ))}
             </div>
           </section>
+
+          {/* Mobile help bar */}
+          <div className="lg:hidden rounded-2xl p-4 flex items-center justify-between shadow-md" style={{ backgroundColor: "#2b394b" }}>
+            <div className="flex items-center gap-3">
+              <Phone size={20} style={{ color: "#cacdd2" }} />
+              <div>
+                <p className="text-white text-sm font-bold">Need Help?</p>
+                <p className="text-xs" style={{ color: "#a8bbc8" }}>Mon – Sat, 9AM – 6PM</p>
+              </div>
+            </div>
+            <a
+              href="tel:18001234567"
+              className="px-4 py-2 rounded-full text-sm font-semibold"
+              style={{ backgroundColor: "#cacdd2", color: "#2b394b" }}
+            >
+              1800-123-4567
+            </a>
+          </div>
 
         </main>
       </div>

@@ -254,9 +254,7 @@ export default function Navbar() {
 
             {/* CTA Buttons */}
             <div className="desktop-nav" style={{ alignItems: "center", gap: 10 }}>
-              <Link to="/login" style={{ textDecoration: "none" }}>
-                <button className="btn-login">Log in</button>
-              </Link>
+              
               <button className="btn-cta" onClick={() => setShowApplyForm(true)}>
                 Apply Now
               </button>
