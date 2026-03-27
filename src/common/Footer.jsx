@@ -84,7 +84,7 @@ export default function Footer() {
     <>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:wght@300;400;500;600&display=swap');
-        *{box-sizing:border-box;margin:0;padding:0;}
+      
         .fr{ background:linear-gradient(180deg,#cacdd2 0%,#c4c8ce 100%); font-family:'DM Sans',sans-serif; position:relative; }
         .fr::before{ content:''; position:absolute; top:0; left:0; right:0; height:2px; background:linear-gradient(90deg,transparent,#2b394b,#cdcde4,#2b394b,transparent); }
 

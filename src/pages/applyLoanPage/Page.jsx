@@ -6,6 +6,8 @@ import {
   Briefcase, Home, TrendingUp, AlertCircle, HeartPulse, Plane
 } from "lucide-react";
 
+import ApplyPage from "../../common/Applynow";
+
 const LOAN_TYPES = [
   { id: "home",      label: "Home Loan",      icon: Home        },
   { id: "auto",      label: "Auto Loan",      icon: Car         },
@@ -140,6 +142,8 @@ export default function ApplyLoanPage() {
   const [quickLoan, setQuickLoan] = useState("home");
   const [quickEmp, setQuickEmp] = useState("salaried");
 
+   const [showApplyForm, setShowApplyForm] = useState(false);
+
   const toggleItem = (key) => setChecked((prev) => ({ ...prev, [key]: !prev[key] }));
 
   const getProgress = (tabId) => {
@@ -157,6 +161,8 @@ export default function ApplyLoanPage() {
   const activeData = CHECKLISTS[activeTab];
   const progress = getProgress(activeTab);
 
+   const openApply = () => setShowApplyForm(true);
+
   return (
     <div style={{ fontFamily: "'DM Sans', sans-serif", background: "#CDCDE4", minHeight: "100vh", color: "#2B394B" }}>
 
@@ -171,6 +177,11 @@ export default function ApplyLoanPage() {
         .tip-card:hover { box-shadow: 0 8px 24px rgba(43,57,75,0.15); transform: translateY(-2px); border-color: #CACDD2 !important; }
         .btn-outline:hover { background: #CACDD2 !important; }
       `}</style>
+
+         {showApplyForm && (
+        <ApplyPage asModal onClose={() => setShowApplyForm(false)} />
+      )}
+
 
       {/* HERO */}
       <section style={{ display: "grid", gridTemplateColumns: "1fr 400px", gap: 60, alignItems: "center", padding: "80px 60px 70px", maxWidth: 1200, margin: "0 auto" }}>
@@ -197,7 +208,7 @@ export default function ApplyLoanPage() {
             <button onClick={scrollToChecklist} style={{ background: "#2B394B", color: "#fff", border: "none", padding: "13px 28px", borderRadius: 8, fontSize: 15, fontWeight: 700, cursor: "pointer", display: "flex", alignItems: "center", gap: 8 }}>
               Find My Document List <ArrowRight size={16} />
             </button>
-            <button className="btn-outline" style={{ background: "#fff", color: "#2B394B", border: "1px solid #B8BCC8", padding: "13px 28px", borderRadius: 8, fontSize: 15, fontWeight: 500, cursor: "pointer" }}>
+            <button className="btn-outline" style={{ background: "#fff", color: "#2B394B", border: "1px solid #B8BCC8", padding: "13px 28px", borderRadius: 8, fontSize: 15, fontWeight: 500, cursor: "pointer" }}  onClick={openApply}>
               Apply for a Loan
             </button>
           </div>
