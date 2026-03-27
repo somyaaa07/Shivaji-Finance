@@ -17,6 +17,7 @@ const LOAN_TYPES = [
   { icon: Plane, label: "Travel Loan" },
 ];
 
+
 const STEPS = [
   { step: "01", title: "Check Eligibility", desc: "Use our online eligibility checker to see if you qualify." },
   { step: "02", title: "Fill Application", desc: "Complete the online form with your personal & financial details." },

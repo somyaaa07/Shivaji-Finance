@@ -8,6 +8,7 @@ import LoanServicePage from './pages/loanServices/Page'
 import About from './pages/about/Page'
 import Navbar from './common/Navbar'
 import Footer from './common/Footer'
+import ApplyLoanPage from './pages/applyLoanPage/Page'
 
 
 
@@ -30,6 +31,10 @@ export default function App() {
 
       <Route path="/service" element={
         <LoanServicePage/>
+      }/>
+      
+      <Route path="/applyloan" element={
+        <ApplyLoanPage/>
       }/>
 
      

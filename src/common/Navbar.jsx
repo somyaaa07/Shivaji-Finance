@@ -20,7 +20,7 @@ const NAV_ITEMS = [
   { label: "Home",      path: "/" },
   { label: "About",     path: "/about" },
   { label: "Service",   path: "/service" },
-  { label: "Calculate", path: "/calculate" },
+  { label: "Apply for Loan", path: "/applyloan" },
   { label: "Contact",   path: "/contact" },
 ];
 
