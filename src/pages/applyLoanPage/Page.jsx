@@ -158,7 +158,7 @@ export default function ApplyLoanPage() {
   const progress = getProgress(activeTab);
 
   return (
-    <div style={{ fontFamily: "'DM Sans', sans-serif", background: "#CDCDE4", minHeight: "100vh", color: "#2B394B" }}>
+    <div style={{ fontFamily: "'DM Sans', sans-serif", background: "#cacdd2", minHeight: "100vh", color: "#2B394B" }}>
 
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap');

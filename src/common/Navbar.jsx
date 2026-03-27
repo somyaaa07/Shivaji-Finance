@@ -84,7 +84,7 @@ export default function Navbar() {
     <>
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:wght@300;400;500;600&display=swap');
-        body { font-family: 'DM Sans', sans-serif; margin: 0; }
+        body { font-family: 'DM Sans', sans-serif; }
 
         @keyframes ticker {
           0%   { transform: translateX(0); }
