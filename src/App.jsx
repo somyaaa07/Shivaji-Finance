@@ -9,13 +9,14 @@ import About from './pages/about/Page'
 import Navbar from './common/Navbar'
 import Footer from './common/Footer'
 import ApplyLoanPage from './pages/applyLoanPage/Page'
+import ScrollToTop from './common/ScrollToTop'
 
 
 
 export default function App() {
   return (
    <Router>
-
+<ScrollToTop/>
    <Navbar/>
     <Routes>
       <Route path="/" element={
